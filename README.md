@@ -1,5 +1,7 @@
 # ShiftCare Technical Challenge
 
+[![Tests](https://github.com/tob1k/challenge/workflows/Tests/badge.svg)](https://github.com/tob1k/challenge/actions)
+
 A Ruby command-line application for searching and analyzing client data from JSON datasets.
 
 ## Features
@@ -13,6 +15,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 1. Clone this repository
 2. Install dependencies:
+
    ```bash
    bundle install
    ```
@@ -22,41 +25,60 @@ A Ruby command-line application for searching and analyzing client data from JSO
 The application provides two main commands:
 
 ### Search Names
+
 Search for clients by name (partial, case-insensitive matching):
 
 ```bash
 # Basic search
-bundle exec bin/challenge search_names --query "John"
+bundle exec bin/challenge search "John"
 
-# Using short form
-bundle exec bin/challenge search_names -q "Smith"
+# Using aliases
+bundle exec bin/challenge s "Smith"
 
 # Using custom dataset
-bundle exec bin/challenge search_names -q "Jane" --dataset custom_clients.json
+bundle exec bin/challenge search "Jane" --filename custom_clients.json
+bundle exec bin/challenge s "Jane" -f custom_clients.json
 ```
 
 ### Find Duplicate Emails
+
 Find all clients with duplicate email addresses:
 
 ```bash
 # Basic duplicate detection
-bundle exec bin/challenge duplicate_emails
+bundle exec bin/challenge duplicates
+
+# Using aliases
+bundle exec bin/challenge dupe
+bundle exec bin/challenge d
 
 # Using custom dataset
-bundle exec bin/challenge duplicate_emails --dataset custom_clients.json
+bundle exec bin/challenge duplicates --filename custom_clients.json
+bundle exec bin/challenge d -f custom_clients.json
 ```
 
 ### Options
 
-- `--dataset`, `-d`: Path to the dataset file (default: `clients.json`)
-- `--query`, `-q`: Search query for name matching (required for search_names)
+- `--filename`, `-f`: Path to the dataset file (default: `clients.json`)
+- `--version`, `-v`: Show version number
+
+### Command Aliases
+
+**Search Commands:**
+
+- `search` or `s` - Short aliases for searching by name
+
+**Duplicate Commands:**
+
+- `duplicates`, `dupe`, or `d` - Short aliases for finding duplicates
 
 ### Help
 
 ```bash
 bundle exec bin/challenge help
-bundle exec bin/challenge help search_names
-bundle exec bin/challenge help duplicate_emails
+bundle exec bin/challenge help search
+bundle exec bin/challenge help duplicates
+bundle exec bin/challenge --version
 ```
 
 ## Dataset Format
@@ -79,6 +101,7 @@ The application expects JSON files containing an array of client objects with th
 ```
 
 Required fields:
+
 - `id`: Unique identifier
 - `full_name`: Client's full name
 - `email`: Client's email address
@@ -101,6 +124,7 @@ bundle exec rspec spec/challenge/dataset_spec.rb
 ### Test Coverage
 
 The test suite includes:
+
 - **Happy path scenarios**: Valid searches, duplicate detection
 - **Edge cases**: Empty queries, whitespace handling, empty datasets
 - **Error scenarios**: Missing files, invalid JSON, malformed data
@@ -129,15 +153,18 @@ The test suite includes:
 ## Architecture Decisions
 
 ### Command-Line Interface
+
 - **Thor**: Chosen for its robust CLI framework with built-in help, option parsing, and command structure
 - **Modular Design**: Separate CLI from business logic for better testability and maintainability
 
 ### Data Processing
+
 - **Dataset Class**: Encapsulates all dataset operations with clear separation of concerns
 - **Eager Loading**: Loads entire dataset into memory for fast repeated operations
 - **Validation**: File existence and JSON format validation at initialization
 
 ### Error Handling
+
 - **Early Validation**: Dataset file validation occurs at object creation
 - **Specific Errors**: Clear error messages for different failure scenarios
 - **Graceful Degradation**: Empty results rather than crashes for edge cases
@@ -154,11 +181,13 @@ The test suite includes:
 Given more time, the following enhancements would be prioritized:
 
 ### Architecture Enhancements
+
 - **Streaming JSON Parser**: Use streaming parser for large datasets to reduce memory footprint
 - **Database Backend**: Add optional database storage for better performance with large datasets
 - **Configuration System**: External configuration files for default settings
 
 ### Feature Extensions
+
 - **Dynamic Field Search**: Allow users to specify which field to search (name, email, id, etc.)
 - **Advanced Search**: Support regex patterns, multiple field search, and complex queries
 - **Export Functionality**: Output results in JSON, CSV, or other formats
@@ -166,12 +195,14 @@ Given more time, the following enhancements would be prioritized:
 - **Caching Layer**: Cache search results for improved performance
 
 ### Scalability Considerations
+
 - **Pagination**: Support for paginated results in large datasets
 - **Indexing**: Add search indexing for faster query performance
 - **Concurrent Processing**: Parallel processing for large dataset operations
 - **Cloud Storage**: Support for datasets stored in cloud storage (S3, etc.)
 
 ### User Experience
+
 - **Interactive Mode**: REPL-style interface for multiple queries
 - **Search Suggestions**: Auto-complete and suggestion features
 - **Progress Indicators**: Progress bars for long-running operations
@@ -180,17 +211,22 @@ Given more time, the following enhancements would be prioritized:
 ## Development
 
 ### Adding New Commands
+
 1. Add method to `Challenge::CLI` class in `lib/challenge/cli.rb`
 2. Add corresponding functionality to `Challenge::Dataset` class
 3. Write comprehensive tests in `spec/challenge/`
 
 ### Running Development Commands
+
 ```bash
 # Load the application in IRB for testing
 bundle exec irb -r ./lib/challenge
 
-# Run linting (if configured)
+# Run linting
 bundle exec rubocop
+
+# Run both tests and linting (CI simulation)
+bundle exec rspec && bundle exec rubocop
 
 # Generate documentation
 bundle exec yard doc
@@ -207,3 +243,4 @@ bundle exec yard doc
 ## License
 
 This project is part of the ShiftCare technical challenge.
+
