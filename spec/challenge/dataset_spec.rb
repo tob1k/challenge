@@ -230,4 +230,97 @@ RSpec.describe Challenge::Dataset do
       end
     end
   end
+
+  describe 'handling malformed data' do
+    let(:malformed_clients) do
+      [
+        { 'id' => 1, 'full_name' => 'John Doe', 'email' => 'john@example.com' },
+        { 'id' => 2, 'full_name' => 'Jane Smith' }, # Missing email
+        { 'id' => 3, 'email' => 'bob@example.com' }, # Missing full_name
+        { 'id' => 4, 'full_name' => '', 'email' => 'empty@example.com' }, # Empty full_name
+        { 'id' => 5, 'full_name' => 'Alice Wilson', 'email' => '' }, # Empty email
+        { 'id' => 6, 'full_name' => nil, 'email' => 'null@example.com' }, # Nil full_name
+        { 'id' => 7, 'full_name' => 'Bob Brown', 'email' => nil }, # Nil email
+        { 'id' => 8, 'full_name' => 'Charlie Davis', 'email' => 'charlie@example.com' },
+        { 'id' => 9, 'full_name' => 'David Evans', 'email' => 'charlie@example.com' } # Duplicate
+      ]
+    end
+
+    let(:malformed_file) do
+      file = Tempfile.new(['malformed_data', '.json'])
+      file.write(JSON.pretty_generate(malformed_clients))
+      file.close
+      file
+    end
+
+    let(:malformed_dataset) { described_class.new(malformed_file.path) }
+
+    after do
+      malformed_file.unlink
+    end
+
+    describe '#search_names' do
+      it 'only searches clients with valid full_name fields' do
+        results = malformed_dataset.search_names('John')
+        expect(results).to contain_exactly(
+          { 'id' => 1, 'full_name' => 'John Doe', 'email' => 'john@example.com' }
+        )
+      end
+
+      it 'ignores clients with missing full_name' do
+        # Client id: 3 has email 'bob@example.com' but no full_name field
+        # Should not be found when searching for 'bob' since we only search full_name
+        results = malformed_dataset.search_names('bob')
+        # Should find Bob Brown (id: 7) who has valid full_name but not client id: 3
+        expect(results).to contain_exactly(
+          { 'id' => 7, 'full_name' => 'Bob Brown', 'email' => nil }
+        )
+      end
+
+      it 'ignores clients with nil full_name' do
+        results = malformed_dataset.search_names('null')
+        expect(results).to eq([])
+      end
+
+      it 'ignores clients with empty full_name' do
+        results = malformed_dataset.search_names('empty')
+        expect(results).to eq([])
+      end
+
+      it 'finds clients with valid names regardless of email issues' do
+        results = malformed_dataset.search_names('Alice')
+        expect(results).to contain_exactly(
+          { 'id' => 5, 'full_name' => 'Alice Wilson', 'email' => '' }
+        )
+      end
+    end
+
+    describe '#duplicate_emails' do
+      it 'only considers clients with valid email addresses' do
+        duplicates = malformed_dataset.duplicate_emails
+        expect(duplicates).to contain_exactly(
+          { 'id' => 8, 'full_name' => 'Charlie Davis', 'email' => 'charlie@example.com' },
+          { 'id' => 9, 'full_name' => 'David Evans', 'email' => 'charlie@example.com' }
+        )
+      end
+
+      it 'ignores clients with missing emails' do
+        # Jane Smith has no email field - should be ignored
+        emails = malformed_dataset.duplicate_emails.map { |client| client['email'] }
+        expect(emails).not_to include(nil)
+      end
+
+      it 'ignores clients with empty emails' do
+        # Alice Wilson has empty email - should be ignored
+        emails = malformed_dataset.duplicate_emails.map { |client| client['email'] }
+        expect(emails).not_to include('')
+      end
+
+      it 'ignores clients with nil emails' do
+        # Bob Brown has nil email - should be ignored
+        emails = malformed_dataset.duplicate_emails.map { |client| client['email'] }
+        expect(emails.compact).to eq(emails) # No nil values
+      end
+    end
+  end
 end

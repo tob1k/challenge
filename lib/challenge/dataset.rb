@@ -14,16 +14,14 @@ module Challenge
     def search_names(query)
       return [] if query.nil? || query.strip.empty?
 
-      query_downcase = query.strip.downcase
-      clients.select do |client|
-        client['full_name'].downcase.include?(query_downcase)
-      end
+      clients.select { |client| client['full_name']&.match?(/#{query.strip}/i) }
     end
 
     def duplicate_emails
-      email_groups = clients.group_by { |client| client['email'] }
-      duplicates = email_groups.select { |_email, clients_with_email| clients_with_email.size > 1 }
-      duplicates.values.flatten
+      clients.select { |client| client['email'] && !client['email'].strip.empty? }
+             .group_by { |client| client['email'] }
+             .select { |_email, clients_with_email| clients_with_email.size > 1 }
+             .values.flatten
     end
 
     private
