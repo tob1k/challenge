@@ -9,7 +9,6 @@ module Challenge
 
     def initialize(dataset_path)
       @dataset_path = dataset_path
-      validate_dataset_file
       @clients = load_dataset
     end
 
@@ -30,14 +29,10 @@ module Challenge
 
     private
 
-    def validate_dataset_file
-      return if File.exist?(@dataset_path)
-
-      raise "Dataset file '#{@dataset_path}' does not exist"
-    end
-
     def load_dataset
       JSON.parse(File.read(@dataset_path))
+    rescue Errno::ENOENT
+      raise "Dataset file '#{@dataset_path}' does not exist"
     rescue JSON::ParserError => e
       raise "Invalid JSON in dataset file: #{e.message}"
     rescue StandardError => e
