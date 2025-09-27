@@ -149,7 +149,7 @@ RSpec.describe Challenge::CLI do
 
           generated_data = JSON.parse(File.read(filename))
           expect(generated_data).to be_an(Array)
-          expect(generated_data.length).to be > 10_000 # Should include duplicates
+          expect(generated_data.length).to eq(10_000) # Should be exactly the requested size
         end
       end
     end
@@ -167,7 +167,7 @@ RSpec.describe Challenge::CLI do
 
           generated_data = JSON.parse(File.read(filename))
           expect(generated_data).to be_an(Array)
-          expect(generated_data.length).to be >= 50
+          expect(generated_data.length).to eq(50)
         end
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe Challenge::CLI do
           expect { cli.generate }.not_to raise_error
 
           generated_data = JSON.parse(File.read(filename))
-          expect(generated_data.length).to be >= 10
+          expect(generated_data.length).to eq(10)
         end
       end
 
@@ -212,7 +212,7 @@ RSpec.describe Challenge::CLI do
           expect { cli.generate }.not_to raise_error
 
           generated_data = JSON.parse(File.read(filename))
-          expect(generated_data.length).to be >= 10
+          expect(generated_data.length).to eq(10)
         end
       end
     end

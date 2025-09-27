@@ -50,15 +50,9 @@ module Challenge
     private
 
     def generate_clients(size)
-      progress_interval = [size / 10, 10_000].max
-      clients = []
-
-      (1..size).each do |id|
-        puts "Generated #{id} clients..." if (id % progress_interval).zero?
-        clients << generate_single_client(id)
+      (1..size).map do |id|
+        generate_single_client(id)
       end
-
-      clients
     end
 
     def generate_single_client(id)
@@ -77,20 +71,14 @@ module Challenge
       duplicate_percentage = 0.02 # 2% duplicates
       num_duplicates = [(original_size * duplicate_percentage).to_i, 1].max
 
-      # Fast name generation for duplicates
-      first_names = %w[Alex Taylor Jordan Morgan Casey Riley Quinn Avery Cameron Drew]
-      last_names = %w[Murphy Chen Patel Kim Wong Silva Kumar Okafor Rossi Ahmed]
-
       num_duplicates.times do
-        original = clients.sample
-        duplicate_id = original_size + clients.length + 1
-        duplicate_name = "#{first_names.sample} #{last_names.sample}"
+        # Pick a random client to get a duplicate email
+        target_client = clients.sample
+        # Pick a different random client to copy the email from
+        source_client = clients.sample
 
-        clients << {
-          id: duplicate_id,
-          full_name: duplicate_name,
-          email: original[:email]
-        }
+        # Assign the source client's email to the target client
+        target_client[:email] = source_client[:email]
       end
     end
   end
