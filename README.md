@@ -6,11 +6,12 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ## Features
 
-- **Name Search**: Search through all clients and return those with names partially matching a given query (case-insensitive)
+- **Name Search**: Search through all clients and return those with names matching a given query (case-insensitive, supports regex patterns)
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
 - **Dataset Generation**: Generate realistic test datasets with customizable size using Faker gem
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
 - **Robust Error Handling**: Validates file existence and JSON format before processing
+- **Graceful Data Handling**: Safely processes datasets with missing or invalid fields
 
 ## Installation
 
@@ -27,11 +28,16 @@ The application provides three main commands:
 
 ### Search Names
 
-Search for clients by name (partial, case-insensitive matching):
+Search for clients by name (case-insensitive, supports regex patterns):
 
 ```bash
 # Basic search
 bundle exec bin/challenge search "John"
+
+# Regex patterns
+bundle exec bin/challenge search "^John"        # Names starting with "John"
+bundle exec bin/challenge search "Smith$"      # Names ending with "Smith"
+bundle exec bin/challenge search "J.*n"        # Names starting with J and ending with n
 
 # Using aliases
 bundle exec bin/challenge s "Smith"
