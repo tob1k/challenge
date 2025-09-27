@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'json'
-require 'faker'
 
 module Challenge
   # Generates realistic test datasets for performance testing and development
@@ -14,10 +13,15 @@ module Challenge
       filename ||= "clients_#{size}.json"
 
       # Set seed for reproducible data if provided
-      Faker::Config.random = Random.new(seed) if seed
+      srand(seed) if seed
 
+      puts "Generating #{size} clients..."
       clients = generate_clients(size)
+
+      puts "Adding duplicates..."
       add_duplicates(clients, size)
+
+      puts "Shuffling and writing to file..."
       clients.shuffle!
 
       File.write(filename, JSON.pretty_generate(clients))
@@ -28,27 +32,43 @@ module Challenge
     private
 
     def generate_clients(size)
-      (1..size).map do |id|
-        generate_client(id)
-      end
-    end
+      progress_interval = [size / 10, 10_000].max
+      clients = []
 
-    def generate_client(id)
-      {
-        id: id,
-        full_name: Faker::Name.name,
-        email: Faker::Internet.email
-      }
+      # Fast realistic data generation without Faker overhead
+      first_names = %w[James Mary John Patricia Robert Jennifer Michael Linda William Elizabeth David Barbara Richard Susan Joseph Jessica Thomas Sarah Christopher Karen Charles Nancy Daniel Lisa Matthew Betty Mark Helen Donald Donna Paul Carol George Ruth Kenneth Shirley Steven Sharon Edward Cynthia]
+      last_names = %w[Smith Johnson Williams Brown Jones Garcia Miller Davis Rodriguez Martinez Hernandez Lopez Gonzalez Wilson Anderson Thomas Taylor Moore Jackson Martin Lee Perez Thompson White Harris Sanchez Clark Ramirez Lewis Robinson Walker Young Allen King Wright Scott Torres Nguyen Hill Flores Green Adams Nelson Baker]
+      domains = %w[example.com test.org sample.net demo.com placeholder.org mockdata.net testsite.com sampleemail.org demodata.net examplesite.com]
+
+      (1..size).each do |id|
+        puts "Generated #{id} clients..." if id % progress_interval == 0
+
+        first_name = first_names.sample
+        last_name = last_names.sample
+        username = "#{first_name.downcase}#{last_name.downcase}#{rand(1000)}"
+
+        clients << {
+          id: id,
+          full_name: "#{first_name} #{last_name}",
+          email: "#{username}@#{domains.sample}"
+        }
+      end
+
+      clients
     end
 
     def add_duplicates(clients, original_size)
       duplicate_percentage = 0.02 # 2% duplicates
       num_duplicates = [(original_size * duplicate_percentage).to_i, 1].max
 
+      # Fast name generation for duplicates
+      first_names = %w[Alex Taylor Jordan Morgan Casey Riley Quinn Avery Cameron Drew]
+      last_names = %w[Murphy Chen Patel Kim Wong Silva Kumar Okafor Rossi Ahmed]
+
       num_duplicates.times do
         original = clients.sample
         duplicate_id = original_size + clients.length + 1
-        duplicate_name = Faker::Name.name
+        duplicate_name = "#{first_names.sample} #{last_names.sample}"
 
         clients << {
           id: duplicate_id,

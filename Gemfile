@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'faker', '~> 3.0'
 gem 'thor'
 
 group :development, :test do
