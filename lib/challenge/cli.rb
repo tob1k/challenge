@@ -15,12 +15,12 @@ module Challenge
                  default: 'clients.json',
                  desc: 'Path to the dataset file'
 
-    desc 'search_names QUERY', <<~DESC
+    desc 'search QUERY', <<~DESC
       Search through all clients and return those with names
       partially matching a given query
     DESC
-    map 'search' => :search_names, 's' => :search_names
-    def search_names(query)
+    map 's' => :search
+    def search(query)
       dataset = Dataset.new(options[:filename])
       results = dataset.search_names(query)
 
@@ -36,12 +36,12 @@ module Challenge
       raise Thor::Error, e.message
     end
 
-    desc :duplicate_emails, <<~DESC
+    desc :duplicates, <<~DESC
       Find out if there are any clients with the same email in
       the dataset, and show those duplicates if any are found
     DESC
-    map 'duplicates' => :duplicate_emails, 'dupe' => :duplicate_emails, 'd' => :duplicate_emails
-    def duplicate_emails
+    map 'dupe' => :duplicates, 'dupes' => :duplicates, 'd' => :duplicates
+    def duplicates
       dataset = Dataset.new(options[:filename])
       duplicates = dataset.duplicate_emails
 
