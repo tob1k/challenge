@@ -5,6 +5,10 @@ module Challenge
   class CLI < Thor
     package_name 'challenge'
 
+    def self.exit_on_failure?
+      true
+    end
+
     class_option :dataset,
                  aliases: ['-d'],
                  type: :string,
@@ -28,6 +32,8 @@ module Challenge
           puts "- #{client['full_name']} (#{client['email']})"
         end
       end
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
 
     desc :duplicate_emails, <<~DESC
@@ -50,6 +56,8 @@ module Challenge
           end
         end
       end
+    rescue StandardError => e
+      raise Thor::Error, e.message
     end
   end
 end
