@@ -5,6 +5,24 @@ require 'json'
 module Challenge
   # Generates realistic test datasets for performance testing and development
   class DatasetGenerator
+    FIRST_NAMES = %w[
+      James Mary John Patricia Robert Jennifer Michael Linda William Elizabeth
+      David Barbara Richard Susan Joseph Jessica Thomas Sarah Christopher Karen
+      Charles Nancy Daniel Lisa Matthew Betty Mark Helen Donald Donna Paul Carol
+      George Ruth Kenneth Shirley Steven Sharon Edward Cynthia
+    ].freeze
+
+    LAST_NAMES = %w[
+      Smith Johnson Williams Brown Jones Garcia Miller Davis Rodriguez Martinez
+      Hernandez Lopez Gonzalez Wilson Anderson Thomas Taylor Moore Jackson Martin
+      Lee Perez Thompson White Harris Sanchez Clark Ramirez Lewis Robinson Walker
+      Young Allen King Wright Scott Torres Nguyen Hill Flores Green Adams Nelson Baker
+    ].freeze
+
+    DOMAINS = %w[
+      example.com test.org sample.net demo.com placeholder.org mockdata.net
+      testsite.com sampleemail.org demodata.net examplesite.com
+    ].freeze
     def self.generate(size, filename = nil, **options)
       new.generate(size, filename, **options)
     end
@@ -18,10 +36,10 @@ module Challenge
       puts "Generating #{size} clients..."
       clients = generate_clients(size)
 
-      puts "Adding duplicates..."
+      puts 'Adding duplicates...'
       add_duplicates(clients, size)
 
-      puts "Shuffling and writing to file..."
+      puts 'Shuffling and writing to file...'
       clients.shuffle!
 
       File.write(filename, JSON.pretty_generate(clients))
@@ -35,26 +53,24 @@ module Challenge
       progress_interval = [size / 10, 10_000].max
       clients = []
 
-      # Fast realistic data generation without Faker overhead
-      first_names = %w[James Mary John Patricia Robert Jennifer Michael Linda William Elizabeth David Barbara Richard Susan Joseph Jessica Thomas Sarah Christopher Karen Charles Nancy Daniel Lisa Matthew Betty Mark Helen Donald Donna Paul Carol George Ruth Kenneth Shirley Steven Sharon Edward Cynthia]
-      last_names = %w[Smith Johnson Williams Brown Jones Garcia Miller Davis Rodriguez Martinez Hernandez Lopez Gonzalez Wilson Anderson Thomas Taylor Moore Jackson Martin Lee Perez Thompson White Harris Sanchez Clark Ramirez Lewis Robinson Walker Young Allen King Wright Scott Torres Nguyen Hill Flores Green Adams Nelson Baker]
-      domains = %w[example.com test.org sample.net demo.com placeholder.org mockdata.net testsite.com sampleemail.org demodata.net examplesite.com]
-
       (1..size).each do |id|
-        puts "Generated #{id} clients..." if id % progress_interval == 0
-
-        first_name = first_names.sample
-        last_name = last_names.sample
-        username = "#{first_name.downcase}#{last_name.downcase}#{rand(1000)}"
-
-        clients << {
-          id: id,
-          full_name: "#{first_name} #{last_name}",
-          email: "#{username}@#{domains.sample}"
-        }
+        puts "Generated #{id} clients..." if (id % progress_interval).zero?
+        clients << generate_single_client(id)
       end
 
       clients
+    end
+
+    def generate_single_client(id)
+      first_name = FIRST_NAMES.sample
+      last_name = LAST_NAMES.sample
+      username = "#{first_name.downcase}#{last_name.downcase}#{rand(1000)}"
+
+      {
+        id: id,
+        full_name: "#{first_name} #{last_name}",
+        email: "#{username}@#{DOMAINS.sample}"
+      }
     end
 
     def add_duplicates(clients, original_size)
