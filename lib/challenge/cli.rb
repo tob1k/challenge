@@ -61,6 +61,12 @@ module Challenge
       raise Thor::Error, e.message
     end
 
+    desc 'version', 'Show version number'
+    map '--version' => :version, '-v' => :version
+    def version
+      puts "challenge #{Challenge::VERSION}"
+    end
+
     private
 
     def format_client(client)
