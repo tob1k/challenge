@@ -34,7 +34,7 @@ module Challenge
       srand(seed) if seed
 
       puts "Generating #{size} clients..."
-      clients = generate_clients(size)
+      clients = (1..size).map { |id| generate_single_client(id) }
 
       puts 'Adding duplicates...'
       add_duplicates(clients, size)
@@ -48,12 +48,6 @@ module Challenge
     end
 
     private
-
-    def generate_clients(size)
-      (1..size).map do |id|
-        generate_single_client(id)
-      end
-    end
 
     def generate_single_client(id)
       first_name = FIRST_NAMES.sample
