@@ -1,6 +1,6 @@
 # ShiftCare Technical Challenge
 
-[![Tests](https://github.com/tob1k/challenge/workflows/Tests/badge.svg)](https://github.com/tob1k/challenge/actions)
+[![Tests](https://github.com/tob1k/challenge/actions/workflows/test.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/test.yml)
 
 A Ruby command-line application for searching and analyzing client data from JSON datasets.
 
@@ -243,4 +243,3 @@ bundle exec yard doc
 ## License
 
 This project is part of the ShiftCare technical challenge.
-
