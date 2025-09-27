@@ -1,6 +1,6 @@
 # Client Data Analysis CLI
 
-[![RSpec Tests](https://github.com/tob1k/challenge/actions/workflows/test.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/test.yml) [![RuboCop](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml)
+[![RSpec Tests](https://github.com/tob1k/challenge/actions/workflows/test.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/test.yml) [![RuboCop Linting](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml)
 
 A Ruby command-line application for searching and analyzing client data from JSON datasets. This project demonstrates clean code architecture, comprehensive testing, and modern Ruby development practices.
 
