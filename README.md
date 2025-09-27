@@ -1,8 +1,8 @@
-# ShiftCare Technical Challenge
+# Client Data Analysis CLI
 
 [![Tests](https://github.com/tob1k/challenge/actions/workflows/test.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/test.yml)
 
-A Ruby command-line application for searching and analyzing client data from JSON datasets.
+A Ruby command-line application for searching and analyzing client data from JSON datasets. This project demonstrates clean code architecture, comprehensive testing, and modern Ruby development practices.
 
 ## Features
 
@@ -134,19 +134,24 @@ The test suite includes:
 
 ```
 .
+├── .github/
+│   └── workflows/
+│       └── test.yml          # CI/CD pipeline
 ├── bin/
-│   └── challenge              # Executable script
+│   └── challenge             # Executable script
 ├── lib/
 │   ├── challenge.rb          # Main module loader
-│   └── challenge/
-│       ├── cli.rb            # Thor CLI interface
-│       └── dataset.rb        # Core dataset operations
+│   ├── challenge/
+│   │   ├── cli.rb            # Thor CLI interface
+│   │   ├── dataset.rb        # Core dataset operations
+│   │   └── version.rb        # Version constant
 ├── spec/
 │   ├── spec_helper.rb        # RSpec configuration
 │   └── challenge/
 │       └── dataset_spec.rb   # Dataset class tests
 ├── clients.json              # Default dataset
 ├── Gemfile                   # Dependencies
+├── .rubocop.yml              # Code style configuration
 └── README.md                 # This file
 ```
 
@@ -242,4 +247,4 @@ bundle exec yard doc
 
 ## License
 
-This project is part of the ShiftCare technical challenge.
+This project is for demonstration purposes.
