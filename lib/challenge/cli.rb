@@ -12,7 +12,7 @@ module Challenge
     class_option :filename,
                  aliases: ['-f'],
                  type: :string,
-                 default: 'clients.json',
+                 default: 'example/clients.json',
                  desc: 'Path to the dataset file'
 
     desc 'search QUERY', <<~DESC

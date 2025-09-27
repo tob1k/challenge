@@ -82,7 +82,7 @@ bundle exec bin/challenge generate --force --size 5000
 
 ### Options
 
-- `--filename`, `-f`: Path to the dataset file (default: `clients.json`)
+- `--filename`, `-f`: Path to the dataset file (default: `example/clients.json`)
 - `--size`, `-s`: Number of clients to generate (default: 10,000, for generate command only)
 - `--force`: Overwrite existing files without confirmation (for generate command only)
 - `--version`, `-v`: Show version number
@@ -166,9 +166,12 @@ The test suite includes:
 .
 ├── .github/
 │   └── workflows/
-│       └── test.yml          # CI/CD pipeline
+│       ├── test.yml          # RSpec tests pipeline
+│       └── rubocop.yml       # RuboCop linting pipeline
 ├── bin/
 │   └── challenge             # Executable script
+├── example/
+│   └── clients.json          # Sample dataset
 ├── lib/
 │   ├── challenge.rb          # Main module loader
 │   ├── challenge/
@@ -179,8 +182,8 @@ The test suite includes:
 ├── spec/
 │   ├── spec_helper.rb        # RSpec configuration
 │   └── challenge/
-│       └── dataset_spec.rb   # Dataset class tests
-├── clients.json              # Default dataset
+│       ├── dataset_spec.rb   # Dataset class tests
+│       └── cli_spec.rb       # CLI integration tests
 ├── Gemfile                   # Dependencies
 ├── .rubocop.yml              # Code style configuration
 └── README.md                 # This file

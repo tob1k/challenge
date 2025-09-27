@@ -1,8 +1,6 @@
-# Large test datasets
-clients_small.json
-clients_medium.json
-clients_large.json
-clients_xlarge.json
+# Generated test datasets (exclude all JSON files except example)
+*.json
+!example/clients.json
 
 # Ruby
 *.gem
