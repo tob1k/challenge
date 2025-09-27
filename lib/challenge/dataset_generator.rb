@@ -39,9 +39,6 @@ module Challenge
       puts 'Adding duplicates...'
       add_duplicates(clients, size)
 
-      puts 'Shuffling and writing to file...'
-      clients.shuffle!
-
       File.write(filename, JSON.pretty_generate(clients))
 
       filename
@@ -66,13 +63,9 @@ module Challenge
       num_duplicates = [(original_size * duplicate_percentage).to_i, 1].max
 
       num_duplicates.times do
-        # Pick a random client to get a duplicate email
-        target_client = clients.sample
-        # Pick a different random client to copy the email from
-        source_client = clients.sample
-
-        # Assign the source client's email to the target client
-        target_client[:email] = source_client[:email]
+        target = clients.sample
+        source = clients.sample
+        target[:email] = source[:email]
       end
     end
   end

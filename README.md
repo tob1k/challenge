@@ -8,7 +8,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 - **Name Search**: Search through all clients and return those with names matching a given query (case-insensitive, supports regex patterns)
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
-- **Dataset Generation**: Generate realistic test datasets with customizable size using Faker gem
+- **Dataset Generation**: Generate realistic test datasets with customizable size and guaranteed duplicates
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
 - **Robust Error Handling**: Validates file existence and JSON format before processing
 - **Graceful Data Handling**: Safely processes datasets with missing or invalid fields
@@ -234,7 +234,7 @@ Given more time, the following enhancements would be prioritized:
 ### Feature Extensions
 
 - **Dynamic Field Search**: Allow users to specify which field to search (name, email, id, etc.)
-- **Advanced Search**: Support regex patterns, multiple field search, and complex queries
+- **Advanced Search**: Multiple field search and complex queries (regex patterns already supported)
 - **Export Functionality**: Output results in JSON, CSV, or other formats
 - **REST API**: Web service interface for remote access
 - **Caching Layer**: Cache search results for improved performance
