@@ -232,9 +232,6 @@ bundle exec rubocop
 
 # Run both tests and linting (CI simulation)
 bundle exec rspec && bundle exec rubocop
-
-# Generate documentation
-bundle exec yard doc
 ```
 
 ## Contributing
