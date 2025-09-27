@@ -8,6 +8,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 - **Name Search**: Search through all clients and return those with names partially matching a given query (case-insensitive)
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
+- **Dataset Generation**: Generate realistic test datasets with customizable size using Faker gem
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
 - **Robust Error Handling**: Validates file existence and JSON format before processing
 
@@ -22,7 +23,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ## Usage
 
-The application provides two main commands:
+The application provides three main commands:
 
 ### Search Names
 
@@ -57,9 +58,33 @@ bundle exec bin/challenge duplicates --filename custom_clients.json
 bundle exec bin/challenge d -f custom_clients.json
 ```
 
+### Generate Test Dataset
+
+Generate realistic test datasets with customizable size:
+
+```bash
+# Generate default dataset (10,000 clients)
+bundle exec bin/challenge generate
+
+# Generate custom size dataset
+bundle exec bin/challenge generate --size 500
+
+# Using aliases and short options
+bundle exec bin/challenge gen -s 1000
+
+# Generate with custom filename
+bundle exec bin/challenge generate --filename my_dataset.json --size 2000
+bundle exec bin/challenge gen -f my_dataset.json -s 2000
+
+# Force overwrite existing files
+bundle exec bin/challenge generate --force --size 5000
+```
+
 ### Options
 
 - `--filename`, `-f`: Path to the dataset file (default: `clients.json`)
+- `--size`, `-s`: Number of clients to generate (default: 10,000, for generate command only)
+- `--force`: Overwrite existing files without confirmation (for generate command only)
 - `--version`, `-v`: Show version number
 
 ### Command Aliases
@@ -72,12 +97,17 @@ bundle exec bin/challenge d -f custom_clients.json
 
 - `duplicates`, `dupe`, or `d` - Short aliases for finding duplicates
 
+**Generate Commands:**
+
+- `generate` or `gen` - Short aliases for dataset generation
+
 ### Help
 
 ```bash
 bundle exec bin/challenge help
 bundle exec bin/challenge help search
 bundle exec bin/challenge help duplicates
+bundle exec bin/challenge help generate
 bundle exec bin/challenge --version
 ```
 
@@ -144,6 +174,7 @@ The test suite includes:
 │   ├── challenge/
 │   │   ├── cli.rb            # Thor CLI interface
 │   │   ├── dataset.rb        # Core dataset operations
+│   │   ├── dataset_generator.rb # Test dataset generation
 │   │   └── version.rb        # Version constant
 ├── spec/
 │   ├── spec_helper.rb        # RSpec configuration

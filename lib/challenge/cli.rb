@@ -65,6 +65,24 @@ module Challenge
       puts "challenge #{Challenge::VERSION}"
     end
 
+    desc 'generate', 'Generate test dataset'
+    option :size, type: :numeric, default: 10_000, desc: 'Number of clients to generate'
+    option :force, type: :boolean, desc: 'Overwrite existing files without confirmation'
+    map 'gen' => :generate
+    def generate
+      size = options[:size]
+      raise Thor::Error, 'Size must be a positive integer' unless size.positive?
+
+      filename = options[:filename] || "clients_#{size}.json"
+
+      check_overwrite(filename) unless options[:force]
+
+      filename = DatasetGenerator.generate(size, options[:filename])
+      puts "Dataset generated: #{filename}"
+    rescue StandardError => e
+      raise Thor::Error, "Failed to generate dataset: #{e.message}"
+    end
+
     private
 
     def dataset
@@ -73,6 +91,13 @@ module Challenge
 
     def format_client(client)
       "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
+    end
+
+    def check_overwrite(filename)
+      return unless File.exist?(filename)
+      return if yes?("File '#{filename}' already exists. Overwrite?")
+
+      raise Thor::Error, 'Generation cancelled by user'
     end
   end
 end
