@@ -1,4 +1,4 @@
-name: Tests
+name: CI
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  rspec:
+    name: RSpec Tests
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,8 +24,21 @@ jobs:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
 
-    - name: Run tests
+    - name: Run RSpec tests
       run: bundle exec rspec
+
+  rubocop:
+    name: RuboCop Linting
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: true
 
     - name: Run RuboCop
       run: bundle exec rubocop
