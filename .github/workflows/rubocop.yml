@@ -1,4 +1,4 @@
-name: rubocop
+name: RuboCop Linting
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  lint:
+  rubocop:
     runs-on: ubuntu-latest
 
     steps:
