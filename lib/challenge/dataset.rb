@@ -8,8 +8,7 @@ module Challenge
     attr_reader :clients
 
     def initialize(dataset_path)
-      @dataset_path = dataset_path
-      @clients = load_dataset
+      @clients = load_dataset(dataset_path)
     end
 
     def search_names(query)
@@ -29,10 +28,10 @@ module Challenge
 
     private
 
-    def load_dataset
-      JSON.parse(File.read(@dataset_path))
+    def load_dataset(path)
+      JSON.parse(File.read(path))
     rescue Errno::ENOENT
-      raise "Dataset file '#{@dataset_path}' does not exist"
+      raise "Dataset file '#{path}' does not exist"
     rescue JSON::ParserError => e
       raise "Invalid JSON in dataset file: #{e.message}"
     rescue StandardError => e
