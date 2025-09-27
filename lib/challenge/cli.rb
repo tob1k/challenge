@@ -21,7 +21,6 @@ module Challenge
     DESC
     map 's' => :search
     def search(query)
-      dataset = Dataset.new(options[:filename])
       results = dataset.search_names(query)
 
       if results.empty?
@@ -42,7 +41,6 @@ module Challenge
     DESC
     map 'dupe' => :duplicates, 'dupes' => :duplicates, 'd' => :duplicates
     def duplicates
-      dataset = Dataset.new(options[:filename])
       duplicates = dataset.duplicate_emails
 
       if duplicates.empty?
@@ -68,6 +66,10 @@ module Challenge
     end
 
     private
+
+    def dataset
+      @dataset ||= Dataset.new(options[:filename])
+    end
 
     def format_client(client)
       "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
