@@ -1,0 +1,34 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.0
+
+plugins:
+  - rubocop-rspec
+
+# Allow longer methods for test descriptions
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - 'spec/**/*'
+
+# Allow longer blocks in specs
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+# Allow higher ABC size for CLI methods
+Metrics/AbcSize:
+  Max: 20
+
+# Disable documentation requirement for specs
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
+
+# Allow longer examples in specs for comprehensive test cases
+RSpec/ExampleLength:
+  Max: 10
+
+# Allow more memoized helpers for complex test scenarios
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
