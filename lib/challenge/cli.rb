@@ -29,7 +29,7 @@ module Challenge
       else
         puts "Found #{results.size} client(s) matching '#{query}':"
         results.each do |client|
-          puts "- #{client['full_name']} (#{client['email']})"
+          puts "- #{format_client(client)}"
         end
       end
     rescue StandardError => e
@@ -53,12 +53,18 @@ module Challenge
         email_groups.each do |email, clients|
           puts "\n#{email}:"
           clients.each do |client|
-            puts "  - #{client['full_name']} (ID: #{client['id']})"
+            puts "  - #{format_client(client)}"
           end
         end
       end
     rescue StandardError => e
       raise Thor::Error, e.message
+    end
+
+    private
+
+    def format_client(client)
+      "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
     end
   end
 end
