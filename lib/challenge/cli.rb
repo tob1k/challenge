@@ -9,25 +9,25 @@ module Challenge
       true
     end
 
-    class_option :dataset,
-                 aliases: ['-d'],
+    class_option :filename,
+                 aliases: ['-f'],
                  type: :string,
                  default: 'clients.json',
                  desc: 'Path to the dataset file'
 
-    desc :search_names, <<~DESC
+    desc 'search_names QUERY', <<~DESC
       Search through all clients and return those with names
       partially matching a given query
     DESC
-    option :query, aliases: ['-q'], type: :string, required: true, desc: 'Search query'
-    def search_names
-      dataset = Dataset.new(options[:dataset])
-      results = dataset.search_names(options[:query])
+    map 'search' => :search_names, 's' => :search_names
+    def search_names(query)
+      dataset = Dataset.new(options[:filename])
+      results = dataset.search_names(query)
 
       if results.empty?
-        puts "No clients found matching '#{options[:query]}'"
+        puts "No clients found matching '#{query}'"
       else
-        puts "Found #{results.size} client(s) matching '#{options[:query]}':"
+        puts "Found #{results.size} client(s) matching '#{query}':"
         results.each do |client|
           puts "- #{client['full_name']} (#{client['email']})"
         end
@@ -40,8 +40,9 @@ module Challenge
       Find out if there are any clients with the same email in
       the dataset, and show those duplicates if any are found
     DESC
+    map 'duplicates' => :duplicate_emails, 'dupe' => :duplicate_emails, 'd' => :duplicate_emails
     def duplicate_emails
-      dataset = Dataset.new(options[:dataset])
+      dataset = Dataset.new(options[:filename])
       duplicates = dataset.duplicate_emails
 
       if duplicates.empty?
