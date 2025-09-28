@@ -22,22 +22,29 @@ A Ruby command-line application for searching and analyzing client data from JSO
 #### From GitHub Packages (Recommended)
 
 ```bash
-# Configure GitHub Packages as a gem source
+# Configure GitHub Packages as a gem source (requires GitHub personal access token)
 echo ":github: Bearer YOUR_GITHUB_TOKEN" >> ~/.gem/credentials
 chmod 0600 ~/.gem/credentials
 
-# Add GitHub Packages to gem sources
-gem sources --add https://rubygems.pkg.github.com/tob1k
-
 # Install the gem
 gem install challenge --source https://rubygems.pkg.github.com/tob1k
+```
+
+**Note**: You'll need a GitHub personal access token with `read:packages` permission. Create one at [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens).
+
+#### From GitHub Releases
+
+Download the latest `.gem` file from the [Releases page](https://github.com/tob1k/challenge/releases) and install locally:
+
+```bash
+gem install challenge-1.2.5.gem
 ```
 
 #### Build Locally
 
 ```bash
 gem build challenge.gemspec
-gem install challenge-1.2.3.gem
+gem install challenge-1.2.5.gem
 ```
 
 ### For Development
@@ -278,6 +285,14 @@ The test suite includes:
 - **DRY Configuration**: Format options driven by a single FORMATTERS constant
 - **Extensible Design**: Easy to add new output formats without modifying core logic
 
+### CI/CD Pipeline
+
+- **Automated Testing**: Multi-version Ruby testing (3.1-3.4) on every push and PR
+- **Code Quality**: RuboCop linting with zero violations tolerance
+- **Automated Releases**: Tag-triggered publishing to GitHub Packages
+- **Reusable Workflows**: DRY principle applied to GitHub Actions workflows
+- **Zero-Config Publishing**: No external secrets or manual configuration required
+
 ### Data Processing
 
 - **Dataset Class**: Encapsulates all dataset operations with clear separation of concerns
@@ -350,24 +365,30 @@ bundle exec rspec && bundle exec rubocop
 
 ### Releasing
 
-The project includes automated release workflows:
+The project includes automated release workflows with full CI/CD pipeline:
 
 1. **Create a release tag**:
    ```bash
-   git tag v1.2.3
-   git push origin v1.2.3
+   # Update version in lib/challenge/version.rb first
+   git add lib/challenge/version.rb
+   git commit -m "Bump version to 1.2.5"
+   git tag v1.2.5
+   git push origin main
+   git push origin v1.2.5
    ```
 
-2. **Automated process**:
-   - Runs RSpec tests across Ruby versions 3.1-3.4
-   - Runs RuboCop linting
-   - Builds the gem
-   - Publishes to GitHub Packages (uses automatic `GITHUB_TOKEN`)
-   - Creates GitHub release with gem attachment
+2. **Automated CI/CD process**:
+   - ✅ **Quality Gates**: Runs RSpec tests across Ruby versions 3.1-3.4 and RuboCop linting
+   - ✅ **Build**: Compiles the gem from source
+   - ✅ **Publish**: Publishes to GitHub Packages registry
+   - ✅ **Release**: Creates GitHub release with changelog and gem attachment
+   - ✅ **Zero-config**: Uses built-in `GITHUB_TOKEN` with appropriate permissions
 
-**Prerequisites for publishing:**
-- Ensure version in `lib/challenge/version.rb` matches the tag
-- No additional secrets required (uses built-in `GITHUB_TOKEN`)
+**Release Features:**
+- 🔄 **Reusable workflows**: Leverages existing test and lint workflows to avoid duplication
+- 🛡️ **Quality assurance**: Only publishes if all tests and linting pass
+- 📦 **Multiple distribution**: Available via GitHub Packages and direct download
+- 🏷️ **Semantic versioning**: Tag-based releases with automatic version detection
 
 ## Contributing
 
