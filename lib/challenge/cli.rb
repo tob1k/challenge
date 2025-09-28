@@ -15,6 +15,12 @@ module Challenge
                  default: 'example/clients.json',
                  desc: 'Path to the dataset file'
 
+    class_option :format,
+                 type: :string,
+                 default: 'tty',
+                 enum: %w[tty csv json xml],
+                 desc: 'Output format (tty, csv, json, xml)'
+
     desc 'search QUERY', <<~DESC
       Search through all clients and return those with names
       partially matching a given query
@@ -22,15 +28,7 @@ module Challenge
     map 's' => :search
     def search(query)
       results = dataset.search_names(query)
-
-      if results.empty?
-        puts "No clients found matching '#{query}'"
-      else
-        puts "Found #{results.size} client(s) matching '#{query}':"
-        results.each do |client|
-          puts "- #{format_client(client)}"
-        end
-      end
+      puts formatter.format_search_results(results, query)
     rescue StandardError => e
       raise Thor::Error, e.message
     end
@@ -42,19 +40,7 @@ module Challenge
     map 'dupe' => :duplicates, 'dupes' => :duplicates, 'd' => :duplicates
     def duplicates
       duplicates = dataset.duplicate_emails
-
-      if duplicates.empty?
-        puts 'No duplicate emails found'
-      else
-        email_groups = duplicates.group_by { |client| client['email'] }
-        puts 'Found duplicate emails:'
-        email_groups.each do |email, clients|
-          puts "\n#{email}:"
-          clients.each do |client|
-            puts "  - #{format_client(client)}"
-          end
-        end
-      end
+      puts formatter.format_duplicate_results(duplicates)
     rescue StandardError => e
       raise Thor::Error, e.message
     end
@@ -62,7 +48,7 @@ module Challenge
     desc 'version', 'Show version number'
     map '--version' => :version, '-v' => :version
     def version
-      puts "challenge #{Challenge::VERSION}"
+      puts formatter.format_version(Challenge::VERSION)
     end
 
     desc 'generate', 'Generate test dataset'
@@ -78,7 +64,7 @@ module Challenge
       check_overwrite(filename) unless options[:force]
 
       filename = DatasetGenerator.generate(size, options[:filename])
-      puts "Dataset generated: #{filename}"
+      puts formatter.format_generation_result(filename, size)
     rescue StandardError => e
       raise Thor::Error, "Failed to generate dataset: #{e.message}"
     end
@@ -89,8 +75,19 @@ module Challenge
       @dataset ||= Dataset.new(options[:filename])
     end
 
-    def format_client(client)
-      "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
+    def formatter
+      @formatter ||= case options[:format] || 'tty'
+                     when 'tty'
+                       Formatters::TTYFormatter.new
+                     when 'csv'
+                       Formatters::CSVFormatter.new
+                     when 'json'
+                       Formatters::JSONFormatter.new
+                     when 'xml'
+                       Formatters::XMLFormatter.new
+                     else
+                       raise Thor::Error, "Unknown format: #{options[:format]}"
+                     end
     end
 
     def check_overwrite(filename)

@@ -144,7 +144,7 @@ RSpec.describe Challenge::CLI do
         output = capture_stdout { cli.generate }
 
         aggregate_failures do
-          expect(output).to include("Dataset generated: #{filename}")
+          expect(output).to include("Generated 10000 clients and saved to '#{filename}'")
           expect(File.exist?(filename)).to be true
 
           generated_data = JSON.parse(File.read(filename))
@@ -162,7 +162,7 @@ RSpec.describe Challenge::CLI do
         output = capture_stdout { cli.generate }
 
         aggregate_failures do
-          expect(output).to include("Dataset generated: #{filename}")
+          expect(output).to include("Generated 50 clients and saved to '#{filename}'")
           expect(File.exist?(filename)).to be true
 
           generated_data = JSON.parse(File.read(filename))

@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'thor'
+gem 'csv'
 
 group :development, :test do
   gem 'rspec', '~> 3.0'
