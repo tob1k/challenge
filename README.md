@@ -2,18 +2,29 @@
 
 [![RSpec](https://github.com/tob1k/challenge/actions/workflows/test.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/test.yml) [![RuboCop](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml/badge.svg)](https://github.com/tob1k/challenge/actions/workflows/rubocop.yml)
 
-A Ruby command-line application for searching and analyzing client data from JSON datasets. This project demonstrates clean code architecture, comprehensive testing, and modern Ruby development practices.
+A Ruby command-line application for searching and analyzing client data from JSON datasets. This project demonstrates clean code architecture, comprehensive testing, and modern Ruby development practices with a professional gem packaging approach.
 
 ## Features
 
 - **Name Search**: Search through all clients and return those with names matching a given query (case-insensitive, supports regex patterns)
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
 - **Dataset Generation**: Generate realistic test datasets with customizable size and guaranteed duplicates
+- **Multiple Output Formats**: Support for TTY, CSV, JSON, XML, and YAML output formats
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
 - **Robust Error Handling**: Validates file existence and JSON format before processing
 - **Graceful Data Handling**: Safely processes datasets with missing or invalid fields
+- **Gem Distribution**: Packaged as a proper Ruby gem for easy installation and distribution
 
 ## Installation
+
+### As a Gem (Recommended)
+
+```bash
+gem build challenge.gemspec
+gem install challenge-1.2.2.gem
+```
+
+### For Development
 
 1. Clone this repository
 2. Install dependencies:
@@ -24,27 +35,33 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ## Usage
 
-The application provides three main commands:
+The application provides three main commands with multiple output format options.
 
 ### Search Names
 
 Search for clients by name (case-insensitive, supports regex patterns):
 
 ```bash
-# Basic search
-bundle exec bin/challenge search "John"
+# Basic search (TTY format - default)
+challenge search "John"
+
+# Different output formats
+challenge search "John" --format json
+challenge search "John" --format csv
+challenge search "John" --format xml
+challenge search "John" --format yaml
 
 # Regex patterns
-bundle exec bin/challenge search "^John"        # Names starting with "John"
-bundle exec bin/challenge search "Smith$"      # Names ending with "Smith"
-bundle exec bin/challenge search "J.*n"        # Names starting with J and ending with n
+challenge search "^John"        # Names starting with "John"
+challenge search "Smith$"      # Names ending with "Smith"
+challenge search "J.*n"        # Names starting with J and ending with n
 
 # Using aliases
-bundle exec bin/challenge s "Smith"
+challenge s "Smith"
 
 # Using custom dataset
-bundle exec bin/challenge search "Jane" --filename custom_clients.json
-bundle exec bin/challenge s "Jane" -f custom_clients.json
+challenge search "Jane" --filename custom_clients.json
+challenge s "Jane" -f custom_clients.json
 ```
 
 ### Find Duplicate Emails
@@ -52,16 +69,22 @@ bundle exec bin/challenge s "Jane" -f custom_clients.json
 Find all clients with duplicate email addresses:
 
 ```bash
-# Basic duplicate detection
-bundle exec bin/challenge duplicates
+# Basic duplicate detection (TTY format - default)
+challenge duplicates
+
+# Different output formats
+challenge duplicates --format json
+challenge duplicates --format csv
+challenge duplicates --format xml
+challenge duplicates --format yaml
 
 # Using aliases
-bundle exec bin/challenge dupe
-bundle exec bin/challenge d
+challenge dupe
+challenge d
 
 # Using custom dataset
-bundle exec bin/challenge duplicates --filename custom_clients.json
-bundle exec bin/challenge d -f custom_clients.json
+challenge duplicates --filename custom_clients.json
+challenge d -f custom_clients.json
 ```
 
 ### Generate Test Dataset
@@ -70,26 +93,37 @@ Generate realistic test datasets with customizable size:
 
 ```bash
 # Generate default dataset (10,000 clients)
-bundle exec bin/challenge generate
+challenge generate
 
 # Generate custom size dataset
-bundle exec bin/challenge generate --size 500
+challenge generate --size 500
 
 # Using aliases and short options
-bundle exec bin/challenge gen -s 1000
+challenge gen --size 1000
 
 # Generate with custom filename
-bundle exec bin/challenge generate --filename my_dataset.json --size 2000
-bundle exec bin/challenge gen -f my_dataset.json -s 2000
+challenge generate --filename my_dataset.json --size 2000
+challenge gen -f my_dataset.json --size 2000
 
 # Force overwrite existing files
-bundle exec bin/challenge generate --force --size 5000
+challenge generate --force --size 5000
 ```
+
+### Output Formats
+
+The application supports multiple output formats via the `--format` option:
+
+- **tty** (default): Human-readable terminal output with colors
+- **csv**: Comma-separated values with headers
+- **json**: Structured JSON output
+- **xml**: Well-formed XML with proper escaping
+- **yaml**: YAML structured data format
 
 ### Options
 
 - `--filename`, `-f`: Path to the dataset file (default: `example/clients.json`)
-- `--size`, `-s`: Number of clients to generate (default: 10,000, for generate command only)
+- `--format`: Output format (tty, csv, json, xml, yaml)
+- `--size`: Number of clients to generate (default: 10,000, for generate command only)
 - `--force`: Overwrite existing files without confirmation (for generate command only)
 - `--version`, `-v`: Show version number
 
@@ -110,11 +144,21 @@ bundle exec bin/challenge generate --force --size 5000
 ### Help
 
 ```bash
-bundle exec bin/challenge help
-bundle exec bin/challenge help search
-bundle exec bin/challenge help duplicates
-bundle exec bin/challenge help generate
-bundle exec bin/challenge --version
+challenge help
+challenge help search
+challenge help duplicates
+challenge help generate
+challenge --version
+```
+
+### Development Usage
+
+For development, you can run commands directly with bundler:
+
+```bash
+bundle exec bin/challenge search "John"
+bundle exec bin/challenge duplicates --format json
+bundle exec bin/challenge generate --size 100
 ```
 
 ## Dataset Format
@@ -184,13 +228,20 @@ The test suite includes:
 │   │   ├── cli.rb            # Thor CLI interface
 │   │   ├── dataset.rb        # Core dataset operations
 │   │   ├── dataset_generator.rb # Test dataset generation
-│   │   └── version.rb        # Version constant
+│   │   ├── version.rb        # Version constant
+│   │   └── formatters/       # Output formatters
+│   │       ├── tty_formatter.rb    # Terminal output
+│   │       ├── csv_formatter.rb    # CSV output
+│   │       ├── json_formatter.rb   # JSON output
+│   │       ├── xml_formatter.rb    # XML output
+│   │       └── yaml_formatter.rb   # YAML output
 ├── spec/
 │   ├── spec_helper.rb        # RSpec configuration
 │   └── challenge/
 │       ├── dataset_spec.rb   # Dataset class tests
 │       └── cli_spec.rb       # CLI integration tests
 ├── Gemfile                   # Dependencies
+├── challenge.gemspec         # Gem specification
 ├── .rubocop.yml              # Code style configuration
 └── README.md                 # This file
 ```
@@ -201,6 +252,14 @@ The test suite includes:
 
 - **Thor**: Chosen for its robust CLI framework with built-in help, option parsing, and command structure
 - **Modular Design**: Separate CLI from business logic for better testability and maintainability
+- **Gem Packaging**: Professional gem distribution with proper gemspec and executable
+
+### Output Formatting
+
+- **Formatter Pattern**: Clean separation of output logic from business logic
+- **Multiple Formats**: Support for TTY, CSV, JSON, XML, and YAML outputs
+- **DRY Configuration**: Format options driven by a single FORMATTERS constant
+- **Extensible Design**: Easy to add new output formats without modifying core logic
 
 ### Data Processing
 
@@ -218,8 +277,7 @@ The test suite includes:
 
 1. **Memory Usage**: Current implementation loads entire dataset into memory, which may not scale for very large files
 2. **Search Functionality**: Only supports name-based searching; field selection is not dynamic
-3. **Output Format**: Results are displayed in simple text format; no JSON/CSV export options
-4. **Case Sensitivity**: Email comparison is case-sensitive (following RFC standards)
+3. **Case Sensitivity**: Email comparison is case-sensitive (following RFC standards)
 
 ## Future Improvements
 
@@ -235,7 +293,6 @@ Given more time, the following enhancements would be prioritized:
 
 - **Dynamic Field Search**: Allow users to specify which field to search (name, email, id, etc.)
 - **Advanced Search**: Multiple field search and complex queries (regex patterns already supported)
-- **Export Functionality**: Output results in JSON, CSV, or other formats
 - **REST API**: Web service interface for remote access
 - **Caching Layer**: Cache search results for improved performance
 
