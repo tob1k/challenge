@@ -5,6 +5,14 @@ module Challenge
   class CLI < Thor
     package_name 'challenge'
 
+    FORMATTERS = {
+      'tty' => Formatters::TTYFormatter,
+      'csv' => Formatters::CSVFormatter,
+      'json' => Formatters::JSONFormatter,
+      'xml' => Formatters::XMLFormatter,
+      'yaml' => Formatters::YAMLFormatter
+    }.freeze
+
     def self.exit_on_failure?
       true
     end
@@ -18,8 +26,8 @@ module Challenge
     class_option :format,
                  type: :string,
                  default: 'tty',
-                 enum: %w[tty csv json xml],
-                 desc: 'Output format (tty, csv, json, xml)'
+                 enum: FORMATTERS.keys,
+                 desc: "Output format (#{FORMATTERS.keys.join(', ')})"
 
     desc 'search QUERY', <<~DESC
       Search through all clients and return those with names
@@ -76,18 +84,13 @@ module Challenge
     end
 
     def formatter
-      @formatter ||= case options[:format] || 'tty'
-                     when 'tty'
-                       Formatters::TTYFormatter.new
-                     when 'csv'
-                       Formatters::CSVFormatter.new
-                     when 'json'
-                       Formatters::JSONFormatter.new
-                     when 'xml'
-                       Formatters::XMLFormatter.new
-                     else
-                       raise Thor::Error, "Unknown format: #{options[:format]}"
-                     end
+      @formatter ||= begin
+        format = options[:format] || 'tty'
+        formatter_class = FORMATTERS[format]
+        raise Thor::Error, "Unknown format: #{format}" unless formatter_class
+
+        formatter_class.new
+      end
     end
 
     def check_overwrite(filename)
