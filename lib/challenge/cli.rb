@@ -23,16 +23,13 @@ module Challenge
                  desc: 'Path to the dataset file (required for all commands except version)'
 
     class_option :output,
-                 alises: ['-o'],
+                 aliases: ['-o'],
                  type: :string,
                  default: 'tty',
                  enum: FORMATTERS.keys,
                  desc: "Output format (#{FORMATTERS.keys.join(', ')})"
 
-    desc 'search QUERY', <<~DESC
-      Search through all clients and return those with names
-      partially matching a given query
-    DESC
+    desc 'search QUERY', 'Find clients by name, using regex QUERY'
     map 's' => :search
     def search(query)
       results = dataset.search_names(query)
@@ -41,10 +38,7 @@ module Challenge
       raise Thor::Error, e.message
     end
 
-    desc :duplicates, <<~DESC
-      Find out if there are any clients with the same email in
-      the dataset, and show those duplicates if any are found
-    DESC
+    desc 'duplicates', 'Find duplicate emails'
     map 'd' => :duplicates
     def duplicates
       duplicates = dataset.duplicate_emails
