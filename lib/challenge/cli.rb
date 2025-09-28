@@ -83,13 +83,13 @@ module Challenge
     def formatter
       @formatter ||= case options[:format] || 'tty'
                      when 'tty'
-                       Challenge::Formatters::TTYFormatter.new
+                       Formatters::TTYFormatter.new
                      when 'csv'
-                       Challenge::Formatters::CSVFormatter.new
+                       Formatters::CSVFormatter.new
                      when 'json'
-                       Challenge::Formatters::JSONFormatter.new
+                       Formatters::JSONFormatter.new
                      when 'xml'
-                       Challenge::Formatters::XMLFormatter.new
+                       Formatters::XMLFormatter.new
                      else
                        raise Thor::Error, "Unknown format: #{options[:format]}"
                      end
