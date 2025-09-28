@@ -22,7 +22,8 @@ module Challenge
                  type: :string,
                  desc: 'Path to the dataset file (required for all commands except version)'
 
-    class_option :format,
+    class_option :output,
+                 alises: ['-o'],
                  type: :string,
                  default: 'tty',
                  enum: FORMATTERS.keys,
@@ -44,7 +45,7 @@ module Challenge
       Find out if there are any clients with the same email in
       the dataset, and show those duplicates if any are found
     DESC
-    map 'dupe' => :duplicates, 'dupes' => :duplicates, 'd' => :duplicates
+    map 'd' => :duplicates
     def duplicates
       duplicates = dataset.duplicate_emails
       puts formatter.format_duplicate_results(duplicates)
@@ -61,7 +62,7 @@ module Challenge
     desc 'generate', 'Generate test dataset'
     option :size, type: :numeric, default: 10_000, desc: 'Number of clients to generate'
     option :force, type: :boolean, desc: 'Overwrite existing files without confirmation'
-    map 'gen' => :generate
+    map 'g' => :generate
     def generate
       size = options[:size]
       raise Thor::Error, 'Size must be a positive integer' unless size.positive?
@@ -98,7 +99,7 @@ module Challenge
 
     def formatter
       @formatter ||= begin
-        format = options[:format] || 'tty'
+        format = options[:output] || 'tty'
         formatter_class = FORMATTERS[format]
         raise Thor::Error, "Unknown format: #{format}" unless formatter_class
 

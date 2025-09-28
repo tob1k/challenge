@@ -50,20 +50,20 @@ challenge duplicates -f data.json
 
 ### Commands
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `generate` | Create test dataset | `challenge generate -f data.json --size 1000` |
-| `search` | Find clients by name | `challenge search "John" -f data.json` |
-| `duplicates` | Find duplicate emails | `challenge duplicates -f data.json` |
-| `version` | Show version | `challenge version` |
+| Command | Alias | Description | Example |
+|---------|-------|-------------|---------|
+| `generate` | `g` | Create test dataset | `challenge generate -f data.json --size 1000` |
+| `search` | `s` | Find clients by name | `challenge search "John" -f data.json` |
+| `duplicates` | `d` | Find duplicate emails | `challenge duplicates -f data.json` |
+| `version` | - | Show version | `challenge version` |
 
 ### Output Formats
 
-Add `--format FORMAT` to any command:
+Add `--output FORMAT` to any command:
 
 ```bash
-challenge search "John" -f data.json --format json
-challenge duplicates -f data.json --format csv
+challenge search "John" -f data.json --output json
+challenge duplicates -f data.json --output csv
 ```
 
 **Available formats:** `tty` (default), `csv`, `json`, `xml`, `yaml`
@@ -73,12 +73,13 @@ challenge duplicates -f data.json --format csv
 ```bash
 # Regex search patterns
 challenge search "^John" -f data.json          # Names starting with "John"
-challenge search "Smith$" -f data.json         # Names ending with "Smith"
+challenge search "Miller$" -f data.json        # Names ending with "Miller"
+challenge search "J.*n" -f data.json           # Names starting with J and ending with n
 
 # Short aliases
 challenge s "John" -f data.json                # search
 challenge d -f data.json                       # duplicates
-challenge gen -f data.json --size 500          # generate
+challenge g -f data.json --size 500            # generate
 
 # Large datasets
 challenge generate -f big_data.json --size 50000 --force
