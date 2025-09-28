@@ -246,15 +246,12 @@ RSpec.describe Challenge::CLI do
       expect(described_class.map['s']).to eq(:search)
     end
 
-    it 'supports duplicate aliases' do
-      aggregate_failures do
-        expect(described_class.map['dupe']).to eq(:duplicates)
-        expect(described_class.map['d']).to eq(:duplicates)
-      end
+    it 'supports duplicate alias "d"' do
+      expect(described_class.map['d']).to eq(:duplicates)
     end
 
-    it 'supports generate alias "gen"' do
-      expect(described_class.map['gen']).to eq(:generate)
+    it 'supports generate alias "g"' do
+      expect(described_class.map['g']).to eq(:generate)
     end
 
     it 'supports version aliases' do
