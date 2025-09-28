@@ -60,31 +60,45 @@ gem install challenge-1.2.5.gem
 
 The application provides three main commands with multiple output format options.
 
+### Getting Started
+
+First, generate a test dataset to work with:
+
+```bash
+# Generate a test dataset with 1000 clients
+challenge generate --filename my_data.json --size 1000
+
+# Then search through it
+challenge search "John" --filename my_data.json
+
+# Or find duplicates
+challenge duplicates --filename my_data.json
+```
+
 ### Search Names
 
 Search for clients by name (case-insensitive, supports regex patterns):
 
 ```bash
-# Basic search (TTY format - default)
-challenge search "John"
+# Basic search (requires dataset file)
+challenge search "John" --filename clients.json
 
 # Different output formats
-challenge search "John" --format json
-challenge search "John" --format csv
-challenge search "John" --format xml
-challenge search "John" --format yaml
+challenge search "John" --filename clients.json --format json
+challenge search "John" --filename clients.json --format csv
+challenge search "John" --filename clients.json --format xml
+challenge search "John" --filename clients.json --format yaml
 
 # Regex patterns
-challenge search "^John"        # Names starting with "John"
-challenge search "Smith$"      # Names ending with "Smith"
-challenge search "J.*n"        # Names starting with J and ending with n
+challenge search "^John" -f clients.json        # Names starting with "John"
+challenge search "Smith$" -f clients.json      # Names ending with "Smith"
+challenge search "J.*n" -f clients.json        # Names starting with J and ending with n
 
 # Using aliases
-challenge s "Smith"
+challenge s "Smith" -f clients.json
 
-# Using custom dataset
-challenge search "Jane" --filename custom_clients.json
-challenge s "Jane" -f custom_clients.json
+# Short form
+challenge s "Jane" -f clients.json
 ```
 
 ### Find Duplicate Emails
@@ -92,22 +106,21 @@ challenge s "Jane" -f custom_clients.json
 Find all clients with duplicate email addresses:
 
 ```bash
-# Basic duplicate detection (TTY format - default)
-challenge duplicates
+# Basic duplicate detection (requires dataset file)
+challenge duplicates --filename clients.json
 
 # Different output formats
-challenge duplicates --format json
-challenge duplicates --format csv
-challenge duplicates --format xml
-challenge duplicates --format yaml
+challenge duplicates --filename clients.json --format json
+challenge duplicates --filename clients.json --format csv
+challenge duplicates --filename clients.json --format xml
+challenge duplicates --filename clients.json --format yaml
 
 # Using aliases
-challenge dupe
-challenge d
+challenge dupe -f clients.json
+challenge d -f clients.json
 
-# Using custom dataset
-challenge duplicates --filename custom_clients.json
-challenge d -f custom_clients.json
+# Short form
+challenge d -f clients.json
 ```
 
 ### Generate Test Dataset

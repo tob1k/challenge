@@ -20,8 +20,7 @@ module Challenge
     class_option :filename,
                  aliases: ['-f'],
                  type: :string,
-                 default: 'example/clients.json',
-                 desc: 'Path to the dataset file'
+                 desc: 'Path to the dataset file (required for all commands except version)'
 
     class_option :format,
                  type: :string,
@@ -80,7 +79,21 @@ module Challenge
     private
 
     def dataset
-      @dataset ||= Dataset.new(options[:filename])
+      filename = options[:filename]
+
+      if filename.nil? || filename.empty?
+        raise Thor::Error, <<~MSG
+          No dataset file specified. Please provide a dataset file with --filename or -f.
+
+          To get started, you can:
+          1. Generate a test dataset: challenge generate --filename my_data.json
+          2. Use your own JSON file: challenge search "John" --filename your_data.json
+
+          For help: challenge help
+        MSG
+      end
+
+      @dataset ||= Dataset.new(filename)
     end
 
     def formatter
