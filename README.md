@@ -17,184 +17,86 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ## Installation
 
-### As a Gem
-
-#### From GitHub Packages (Recommended)
+### Quick Install (Recommended)
 
 ```bash
-# Configure GitHub Packages as a gem source (requires GitHub personal access token)
-echo ":github: Bearer YOUR_GITHUB_TOKEN" >> ~/.gem/credentials
-chmod 0600 ~/.gem/credentials
-
-# Install the gem
-gem install challenge --source https://rubygems.pkg.github.com/tob1k
+curl -L https://github.com/tob1k/challenge/releases/download/v1.2.10/challenge-1.2.10.gem -o challenge.gem
+gem install challenge.gem
+rm challenge.gem
 ```
 
-**Note**: You'll need a GitHub personal access token with `read:packages` permission. Create one at [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens).
+### Alternative Install
 
-#### From GitHub Releases
-
-Download the latest `.gem` file from the [Releases page](https://github.com/tob1k/challenge/releases) and install locally:
+Download the latest `.gem` file from [Releases](https://github.com/tob1k/challenge/releases) and install locally:
 
 ```bash
-gem install challenge-1.2.5.gem
-```
-
-#### Build Locally
-
-```bash
-gem build challenge.gemspec
-gem install challenge-1.2.5.gem
+gem install challenge-1.2.10.gem
 ```
 
 ### For Development
 
-1. Clone this repository
-2. Install dependencies:
-
-   ```bash
-   bundle install
-   ```
+```bash
+git clone https://github.com/tob1k/challenge.git
+cd challenge
+bundle install
+```
 
 ## Usage
 
-The application provides three main commands with multiple output format options.
-
-### Getting Started
-
-First, generate a test dataset to work with:
+### Quick Start
 
 ```bash
-# Generate a test dataset with 1000 clients
-challenge generate --filename my_data.json --size 1000
+# 1. Generate test data
+challenge generate -f data.json --size 1000
 
-# Then search through it
-challenge search "John" --filename my_data.json
+# 2. Search for clients
+challenge search "John" -f data.json
 
-# Or find duplicates
-challenge duplicates --filename my_data.json
+# 3. Find duplicate emails
+challenge duplicates -f data.json
 ```
 
-### Search Names
+### Commands
 
-Search for clients by name (case-insensitive, supports regex patterns):
-
-```bash
-# Basic search (requires dataset file)
-challenge search "John" --filename clients.json
-
-# Different output formats
-challenge search "John" --filename clients.json --format json
-challenge search "John" --filename clients.json --format csv
-challenge search "John" --filename clients.json --format xml
-challenge search "John" --filename clients.json --format yaml
-
-# Regex patterns
-challenge search "^John" -f clients.json        # Names starting with "John"
-challenge search "Smith$" -f clients.json      # Names ending with "Smith"
-challenge search "J.*n" -f clients.json        # Names starting with J and ending with n
-
-# Using aliases
-challenge s "Smith" -f clients.json
-
-# Short form
-challenge s "Jane" -f clients.json
-```
-
-### Find Duplicate Emails
-
-Find all clients with duplicate email addresses:
-
-```bash
-# Basic duplicate detection (requires dataset file)
-challenge duplicates --filename clients.json
-
-# Different output formats
-challenge duplicates --filename clients.json --format json
-challenge duplicates --filename clients.json --format csv
-challenge duplicates --filename clients.json --format xml
-challenge duplicates --filename clients.json --format yaml
-
-# Using aliases
-challenge dupe -f clients.json
-challenge d -f clients.json
-
-# Short form
-challenge d -f clients.json
-```
-
-### Generate Test Dataset
-
-Generate realistic test datasets with customizable size:
-
-```bash
-# Generate default dataset (10,000 clients)
-challenge generate
-
-# Generate custom size dataset
-challenge generate --size 500
-
-# Using aliases and short options
-challenge gen --size 1000
-
-# Generate with custom filename
-challenge generate --filename my_dataset.json --size 2000
-challenge gen -f my_dataset.json --size 2000
-
-# Force overwrite existing files
-challenge generate --force --size 5000
-```
+| Command | Description | Example |
+|---------|-------------|---------|
+| `generate` | Create test dataset | `challenge generate -f data.json --size 1000` |
+| `search` | Find clients by name | `challenge search "John" -f data.json` |
+| `duplicates` | Find duplicate emails | `challenge duplicates -f data.json` |
+| `version` | Show version | `challenge version` |
 
 ### Output Formats
 
-The application supports multiple output formats via the `--format` option:
+Add `--format FORMAT` to any command:
 
-- **tty** (default): Human-readable terminal output with colors
-- **csv**: Comma-separated values with headers
-- **json**: Structured JSON output
-- **xml**: Well-formed XML with proper escaping
-- **yaml**: YAML structured data format
+```bash
+challenge search "John" -f data.json --format json
+challenge duplicates -f data.json --format csv
+```
 
-### Options
+**Available formats:** `tty` (default), `csv`, `json`, `xml`, `yaml`
 
-- `--filename`, `-f`: Path to the dataset file (default: `example/clients.json`)
-- `--format`: Output format (tty, csv, json, xml, yaml)
-- `--size`: Number of clients to generate (default: 10,000, for generate command only)
-- `--force`: Overwrite existing files without confirmation (for generate command only)
-- `--version`, `-v`: Show version number
+### Advanced Usage
 
-### Command Aliases
+```bash
+# Regex search patterns
+challenge search "^John" -f data.json          # Names starting with "John"
+challenge search "Smith$" -f data.json         # Names ending with "Smith"
 
-**Search Commands:**
+# Short aliases
+challenge s "John" -f data.json                # search
+challenge d -f data.json                       # duplicates
+challenge gen -f data.json --size 500          # generate
 
-- `search` or `s` - Short aliases for searching by name
-
-**Duplicate Commands:**
-
-- `duplicates`, `dupe`, or `d` - Short aliases for finding duplicates
-
-**Generate Commands:**
-
-- `generate` or `gen` - Short aliases for dataset generation
+# Large datasets
+challenge generate -f big_data.json --size 50000 --force
+```
 
 ### Help
 
 ```bash
 challenge help
-challenge help search
-challenge help duplicates
-challenge help generate
 challenge --version
-```
-
-### Development Usage
-
-For development, you can run commands directly with bundler:
-
-```bash
-bundle exec bin/challenge search "John"
-bundle exec bin/challenge duplicates --format json
-bundle exec bin/challenge generate --size 100
 ```
 
 ## Dataset Format
