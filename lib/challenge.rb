@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require 'bundler/setup'
-Bundler.require(:default)
+require 'thor'
+require 'csv'
+require 'json'
+require 'yaml'
 
 require_relative 'challenge/formatters/tty_formatter'
 require_relative 'challenge/formatters/csv_formatter'
