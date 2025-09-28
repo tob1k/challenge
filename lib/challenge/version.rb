@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module Challenge
-  VERSION = '1.2.10'
+  VERSION = '1.3'
 end

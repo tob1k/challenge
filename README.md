@@ -22,7 +22,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 Download the latest `.gem` file from [Releases](https://github.com/tob1k/challenge/releases) and install locally:
 
 ```bash
-gem install challenge-1.2.10.gem
+gem install challenge-1.3.gem
 ```
 
 ### For Development
@@ -52,10 +52,10 @@ challenge duplicates -f data.json
 
 | Command | Alias | Description | Example |
 |---------|-------|-------------|---------|
-| `generate` | `g` | Create test dataset | `challenge generate -f data.json --size 1000` |
-| `search` | `s` | Find clients by name | `challenge search "John" -f data.json` |
+| `generate` | `g` | Generate test dataset | `challenge generate -f data.json --size 1000` |
+| `search` | `s` | Find clients by name, using regex | `challenge search "John" -f data.json` |
 | `duplicates` | `d` | Find duplicate emails | `challenge duplicates -f data.json` |
-| `version` | - | Show version | `challenge version` |
+| `version` | - | Show version number | `challenge version` |
 
 ### Output Formats
 
