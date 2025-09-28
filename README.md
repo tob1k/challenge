@@ -19,14 +19,6 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ### Quick Install (Recommended)
 
-```bash
-curl -L https://github.com/tob1k/challenge/releases/download/v1.2.10/challenge-1.2.10.gem -o challenge.gem
-gem install challenge.gem
-rm challenge.gem
-```
-
-### Alternative Install
-
 Download the latest `.gem` file from [Releases](https://github.com/tob1k/challenge/releases) and install locally:
 
 ```bash
@@ -284,6 +276,7 @@ bundle exec rspec && bundle exec rubocop
 The project includes automated release workflows with full CI/CD pipeline:
 
 1. **Create a release tag**:
+
    ```bash
    # Update version in lib/challenge/version.rb first
    git add lib/challenge/version.rb
@@ -301,6 +294,7 @@ The project includes automated release workflows with full CI/CD pipeline:
    - ✅ **Zero-config**: Uses built-in `GITHUB_TOKEN` with appropriate permissions
 
 **Release Features:**
+
 - 🔄 **Reusable workflows**: Leverages existing test and lint workflows to avoid duplication
 - 🛡️ **Quality assurance**: Only publishes if all tests and linting pass
 - 📦 **Multiple distribution**: Available via GitHub Packages and direct download
