@@ -2,6 +2,7 @@
 
 module Challenge
   module Formatters
+    # Formats output for terminal display with colors and human-readable text
     class TTYFormatter
       def format_search_results(results, query)
         if results.empty?

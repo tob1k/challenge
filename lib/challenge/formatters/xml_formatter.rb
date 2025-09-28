@@ -2,6 +2,7 @@
 
 module Challenge
   module Formatters
+    # Formats output as well-formed XML with proper escaping
     class XMLFormatter
       def format_search_results(results, query)
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']

@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'formatters/tty_formatter'
+require_relative 'formatters/csv_formatter'
+require_relative 'formatters/json_formatter'
+require_relative 'formatters/xml_formatter'
+
 module Challenge
   # CLI interface for the Challenge application
   class CLI < Thor
@@ -78,13 +83,13 @@ module Challenge
     def formatter
       @formatter ||= case options[:format] || 'tty'
                      when 'tty'
-                       Formatters::TTYFormatter.new
+                       Challenge::Formatters::TTYFormatter.new
                      when 'csv'
-                       Formatters::CSVFormatter.new
+                       Challenge::Formatters::CSVFormatter.new
                      when 'json'
-                       Formatters::JSONFormatter.new
+                       Challenge::Formatters::JSONFormatter.new
                      when 'xml'
-                       Formatters::XMLFormatter.new
+                       Challenge::Formatters::XMLFormatter.new
                      else
                        raise Thor::Error, "Unknown format: #{options[:format]}"
                      end

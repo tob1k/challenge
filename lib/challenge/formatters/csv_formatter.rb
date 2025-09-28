@@ -4,6 +4,7 @@ require 'csv'
 
 module Challenge
   module Formatters
+    # Formats output as CSV with headers and comments
     class CSVFormatter
       def format_search_results(results, query)
         if results.empty?

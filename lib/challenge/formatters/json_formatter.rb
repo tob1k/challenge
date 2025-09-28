@@ -4,6 +4,7 @@ require 'json'
 
 module Challenge
   module Formatters
+    # Formats output as structured JSON with metadata
     class JSONFormatter
       def format_search_results(results, query)
         {
