@@ -51,26 +51,14 @@ jobs:
         gem push --key github --host https://rubygems.pkg.github.com/${{ github.repository_owner }} challenge-*.gem
 
     - name: Create GitHub Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        name: Release ${{ github.ref }}
         body: |
           ## Changes
 
           See the [CHANGELOG](https://github.com/tob1k/challenge/blob/main/CHANGELOG.md) for details.
+        files: ./challenge-${{ steps.get_version.outputs.version }}.gem
         draft: false
         prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./challenge-${{ steps.get_version.outputs.version }}.gem
-        asset_name: challenge-${{ steps.get_version.outputs.version }}.gem
-        asset_content_type: application/octet-stream
