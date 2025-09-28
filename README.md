@@ -17,11 +17,27 @@ A Ruby command-line application for searching and analyzing client data from JSO
 
 ## Installation
 
-### As a Gem (Recommended)
+### As a Gem
+
+#### From GitHub Packages (Recommended)
+
+```bash
+# Configure GitHub Packages as a gem source
+echo ":github: Bearer YOUR_GITHUB_TOKEN" >> ~/.gem/credentials
+chmod 0600 ~/.gem/credentials
+
+# Add GitHub Packages to gem sources
+gem sources --add https://rubygems.pkg.github.com/tob1k
+
+# Install the gem
+gem install challenge --source https://rubygems.pkg.github.com/tob1k
+```
+
+#### Build Locally
 
 ```bash
 gem build challenge.gemspec
-gem install challenge-1.2.2.gem
+gem install challenge-1.2.3.gem
 ```
 
 ### For Development
@@ -217,7 +233,8 @@ The test suite includes:
 ├── .github/
 │   └── workflows/
 │       ├── test.yml          # RSpec tests pipeline
-│       └── rubocop.yml       # RuboCop linting pipeline
+│       ├── rubocop.yml       # RuboCop linting pipeline
+│       └── release.yml       # Automated gem publishing
 ├── bin/
 │   └── challenge             # Executable script
 ├── example/
@@ -330,6 +347,27 @@ bundle exec rubocop
 # Run both tests and linting (CI simulation)
 bundle exec rspec && bundle exec rubocop
 ```
+
+### Releasing
+
+The project includes automated release workflows:
+
+1. **Create a release tag**:
+   ```bash
+   git tag v1.2.3
+   git push origin v1.2.3
+   ```
+
+2. **Automated process**:
+   - Runs RSpec tests across Ruby versions 3.1-3.4
+   - Runs RuboCop linting
+   - Builds the gem
+   - Publishes to GitHub Packages (uses automatic `GITHUB_TOKEN`)
+   - Creates GitHub release with gem attachment
+
+**Prerequisites for publishing:**
+- Ensure version in `lib/challenge/version.rb` matches the tag
+- No additional secrets required (uses built-in `GITHUB_TOKEN`)
 
 ## Contributing
 
