@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = "#{spec.homepage}.git"
   spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/main/CHANGELOG.md"
   spec.metadata['github_repo'] = 'ssh://github.com/tob1k/challenge'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.chdir(__dir__) do
