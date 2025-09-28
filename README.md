@@ -266,6 +266,7 @@ The test suite includes:
 │       └── cli_spec.rb       # CLI integration tests
 ├── Gemfile                   # Dependencies
 ├── challenge.gemspec         # Gem specification
+├── CHANGELOG.md              # Release history and changes
 ├── .rubocop.yml              # Code style configuration
 └── README.md                 # This file
 ```
