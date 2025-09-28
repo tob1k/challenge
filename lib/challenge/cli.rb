@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'formatters/tty_formatter'
-require_relative 'formatters/csv_formatter'
-require_relative 'formatters/json_formatter'
-require_relative 'formatters/xml_formatter'
-
 module Challenge
   # CLI interface for the Challenge application
   class CLI < Thor
