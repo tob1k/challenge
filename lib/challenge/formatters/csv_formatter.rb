@@ -10,8 +10,8 @@ module Challenge
         if results.empty?
           "# No clients found matching '#{query}'"
         else
-          lines = ["# Found #{results.size} client(s) matching '#{query}':", csv_header]
-          results.each { |client| lines << format_client_csv(client) }
+          lines = ["# Found #{results.size} client(s) matching '#{query}':", extended_csv_header]
+          results.each { |client| lines << format_extended_client_csv(client) }
           lines.join("\n")
         end
       end
@@ -20,8 +20,8 @@ module Challenge
         if duplicates.empty?
           '# No duplicate emails found'
         else
-          lines = ['# Found duplicate emails:', csv_header]
-          duplicates.each { |client| lines << format_client_csv(client) }
+          lines = ['# Found duplicate emails:', extended_csv_header]
+          duplicates.each { |client| lines << format_extended_client_csv(client) }
           lines.join("\n")
         end
       end
@@ -54,15 +54,17 @@ module Challenge
         CSV.generate_line([client['id'], client['full_name'], client['email']]).strip
       end
 
-      def filtered_csv_header
+      def extended_csv_header
         'id,full_name,email,rating,feedback_comments'
       end
+      alias filtered_csv_header extended_csv_header
 
-      def format_filtered_client_csv(client)
+      def format_extended_client_csv(client)
         rating = client.dig('result', 'rating')
         feedback = feedback_comments(client).join(' | ')
         CSV.generate_line([client['id'], client['full_name'], client['email'], rating, feedback]).strip
       end
+      alias format_filtered_client_csv format_extended_client_csv
 
       def feedback_comments(client)
         Array(client.dig('result', 'feedback')).filter_map do |entry|

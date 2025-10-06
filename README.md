@@ -7,9 +7,12 @@ A Ruby command-line application for searching and analyzing client data from JSO
 ## Features
 
 - **Name Search**: Search through all clients and return those with names matching a given query (case-insensitive, supports regex patterns)
+  - TTY output includes **syntax highlighting** to visually highlight matched text
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
+- **Rating Filter**: Filter clients by minimum rating threshold
 - **Dataset Generation**: Generate realistic test datasets with customizable size and guaranteed duplicates
 - **Multiple Output Formats**: Support for TTY, CSV, JSON, XML, and YAML output formats
+  - All formats support optional `result` fields (rating and feedback comments)
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
 - **Robust Error Handling**: Validates file existence and JSON format before processing
 - **Graceful Data Handling**: Safely processes datasets with missing or invalid fields
@@ -55,6 +58,7 @@ challenge duplicates -f data.json
 | `generate` | `g` | Generate test dataset | `challenge generate -f data.json --size 1000` |
 | `search` | `s` | Find clients by name, using regex | `challenge search "John" -f data.json` |
 | `duplicates` | `d` | Find duplicate emails | `challenge duplicates -f data.json` |
+| `filter_by_rating` | - | Filter clients by minimum rating | `challenge filter_by_rating 4.0 -f data.json` |
 | `version` | - | Show version number | `challenge version` |
 
 ### Output Formats
@@ -75,6 +79,10 @@ challenge duplicates -f data.json --output csv
 challenge search "^John" -f data.json          # Names starting with "John"
 challenge search "Miller$" -f data.json        # Names ending with "Miller"
 challenge search "J.*n" -f data.json           # Names starting with J and ending with n
+
+# Filter by rating
+challenge filter_by_rating 3.5 -f data.json    # Clients with rating >= 3.5
+challenge filter_by_rating 4.0 -f data.json --output json
 
 # Short aliases
 challenge s "John" -f data.json                # search
@@ -101,21 +109,44 @@ The application expects JSON files containing an array of client objects with th
   {
     "id": 1,
     "full_name": "John Doe",
-    "email": "john.doe@gmail.com"
+    "email": "john.doe@gmail.com",
+    "result": {
+      "rating": 4.5,
+      "feedback": [
+        {
+          "comment": "Great job on the project!",
+          "date": "2023-10-01"
+        },
+        {
+          "comment": "Excellent communication skills.",
+          "date": "2023-10-15"
+        }
+      ]
+    }
   },
   {
     "id": 2,
     "full_name": "Jane Smith",
-    "email": "jane.smith@yahoo.com"
+    "email": "jane.smith@yahoo.com",
+    "result": {
+      "rating": 3.8,
+      "feedback": []
+    }
   }
 ]
 ```
 
-Required fields:
+**Required fields:**
 
 - `id`: Unique identifier
 - `full_name`: Client's full name
 - `email`: Client's email address
+
+**Optional fields:**
+
+- `result`: Object containing performance data (used by `filter_by_rating` command)
+  - `rating`: Numeric rating value
+  - `feedback`: Array of feedback objects with `comment` and `date` fields (date is optional)
 
 ## Testing
 
@@ -249,7 +280,7 @@ Given more time, the following enhancements would be prioritized:
 - **Interactive Mode**: REPL-style interface for multiple queries
 - **Search Suggestions**: Auto-complete and suggestion features
 - **Progress Indicators**: Progress bars for long-running operations
-- **Colored Output**: Syntax highlighting and colored output for better readability
+- ✅ **Colored Output**: Syntax highlighting for search results in TTY format (implemented)
 
 ## Development
 

@@ -10,7 +10,8 @@ module Challenge
         else
           lines = ["Found #{results.size} client(s) matching '#{query}':"]
           results.each do |client|
-            lines << "- #{format_client(client)}"
+            lines << "- #{format_client(client, query)}"
+            lines.concat(format_client_details(client))
           end
           lines.join("\n")
         end
@@ -26,6 +27,7 @@ module Challenge
             lines << "\n#{email}:"
             clients.each do |client|
               lines << "  - #{format_client(client)}"
+              format_client_details(client).each { |detail| lines << "    #{detail}" }
             end
           end
           lines.join("\n")
@@ -61,8 +63,32 @@ module Challenge
 
       private
 
-      def format_client(client)
-        "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
+      def format_client(client, highlight = nil)
+        name = highlight ? highlight_match(client['full_name'], highlight) : client['full_name']
+        email = client['email']
+
+        "#{name} <#{email}> \e[90m##{client['id']}\e[0m"
+      end
+
+      def highlight_match(text, pattern)
+        return text unless pattern
+
+        text.gsub(Regexp.new(pattern, Regexp::IGNORECASE)) do |match|
+          "\e[1;33m#{match}\e[0m"
+        end
+      rescue RegexpError
+        text
+      end
+
+      def format_client_details(client)
+        details = []
+        rating = client.dig('result', 'rating')
+        details << "  Rating: #{rating}" if rating
+
+        feedback_comments = extract_feedback_comments(client)
+        details << "  Feedback: #{feedback_comments.map { |c| "\"#{c}\"" }.join(', ')}" if feedback_comments.any?
+
+        details
       end
 
       def extract_feedback_comments(client)

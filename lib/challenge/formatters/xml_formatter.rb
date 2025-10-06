@@ -7,7 +7,7 @@ module Challenge
       def format_search_results(results, query)
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']
         lines << "<search_results query=\"#{escape_xml(query)}\" count=\"#{results.size}\">"
-        results.each { |client| lines << format_client_xml(client, '  ') }
+        results.each { |client| lines << format_filtered_client_xml(client, '  ') }
         lines << '</search_results>'
         lines.join("\n")
       end
@@ -21,7 +21,7 @@ module Challenge
           lines << "<duplicate_results count=\"#{duplicates.size}\">"
           email_groups.each do |email, clients|
             lines << "  <duplicate_group email=\"#{escape_xml(email)}\">"
-            clients.each { |client| lines << format_client_xml(client, '    ') }
+            clients.each { |client| lines << format_filtered_client_xml(client, '    ') }
             lines << '  </duplicate_group>'
           end
           lines << '</duplicate_results>'
