@@ -29,13 +29,17 @@ module Challenge
                  enum: FORMATTERS.keys,
                  desc: "Output format (#{FORMATTERS.keys.join(', ')})"
 
+    class_option :debug,
+                 type: :boolean,
+                 desc: 'Enable debug mode and show full stack traces when errors occur'
+
     desc 'search QUERY', 'Find clients by name, using regex QUERY'
     map 's' => :search
     def search(query)
       results = dataset.search_names(query)
       puts formatter.format_search_results(results, query)
     rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error(e)
     end
 
     desc 'duplicates', 'Find duplicate emails'
@@ -44,7 +48,15 @@ module Challenge
       duplicates = dataset.duplicate_emails
       puts formatter.format_duplicate_results(duplicates)
     rescue StandardError => e
-      raise Thor::Error, e.message
+      handle_error(e)
+    end
+
+    desc 'filter RATING', 'filter results by RATING'
+    def filter_by_rating(rating)
+      results = dataset.filter_by_rating(rating)
+      puts formatter.format_filtered_results(results)
+    rescue StandardError => e
+      handle_error(e)
     end
 
     desc 'version', 'Show version number'
@@ -68,7 +80,7 @@ module Challenge
       filename = DatasetGenerator.generate(size, options[:filename])
       puts formatter.format_generation_result(filename, size)
     rescue StandardError => e
-      raise Thor::Error, "Failed to generate dataset: #{e.message}"
+      handle_error(e, "Failed to generate dataset: #{e.message}")
     end
 
     private
@@ -106,6 +118,16 @@ module Challenge
       return if yes?("File '#{filename}' already exists. Overwrite?")
 
       raise Thor::Error, 'Generation cancelled by user'
+    end
+
+    def handle_error(error, message = nil)
+      raise error if debug_mode?
+
+      raise Thor::Error, (message || error.message)
+    end
+
+    def debug_mode?
+      !!options[:debug]
     end
   end
 end

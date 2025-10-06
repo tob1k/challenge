@@ -41,6 +41,18 @@ module Challenge
         ].join("\n")
       end
 
+      def format_filtered_results(results)
+        lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+        if results.empty?
+          lines << '<filtered_results count="0"/>'
+        else
+          lines << "<filtered_results count=\"#{results.size}\">"
+          results.each { |client| lines << format_filtered_client_xml(client, '  ') }
+          lines << '</filtered_results>'
+        end
+        lines.join("\n")
+      end
+
       def format_version(version)
         [
           '<?xml version="1.0" encoding="UTF-8"?>',
@@ -62,6 +74,29 @@ module Challenge
         ].join("\n")
       end
 
+      def format_filtered_client_xml(client, indent = '')
+        lines = [
+          "#{indent}<client id=\"#{client['id']}\">",
+          "#{indent}  <full_name>#{escape_xml(client['full_name'])}</full_name>",
+          "#{indent}  <email>#{escape_xml(client['email'])}</email>"
+        ]
+
+        rating = client.dig('result', 'rating')
+        lines << "#{indent}  <rating>#{escape_xml(rating)}</rating>" if rating
+
+        feedback_comments = extract_feedback_comments(client)
+        if feedback_comments.any?
+          lines << "#{indent}  <feedback>"
+          feedback_comments.each do |comment|
+            lines << "#{indent}    <comment>#{escape_xml(comment)}</comment>"
+          end
+          lines << "#{indent}  </feedback>"
+        end
+
+        lines << "#{indent}</client>"
+        lines.join("\n")
+      end
+
       def escape_xml(text)
         return '' if text.nil?
 
@@ -71,6 +106,12 @@ module Challenge
             .gsub('>', '&gt;')
             .gsub('"', '&quot;')
             .gsub("'", '&apos;')
+      end
+
+      def extract_feedback_comments(client)
+        Array(client.dig('result', 'feedback')).filter_map do |entry|
+          entry.is_a?(Hash) ? entry['comment'] : entry
+        end
       end
     end
   end

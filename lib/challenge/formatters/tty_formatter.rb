@@ -36,6 +36,25 @@ module Challenge
         "Generated #{size} clients and saved to '#{filename}'"
       end
 
+      def format_filtered_results(results)
+        return 'No clients matched the rating filter' if results.empty?
+
+        lines = []
+        results.each do |client|
+          lines << format_client(client)
+
+          rating = client.dig('result', 'rating')
+          lines << "Rating #{rating}" if rating
+
+          feedback_comments = extract_feedback_comments(client)
+          lines << feedback_comments.map { |comment| "\"#{comment}\"" }.join(', ') if feedback_comments.any?
+          lines << ''
+        end
+
+        lines.pop if lines.last == ''
+        lines.join("\n")
+      end
+
       def format_version(version)
         "challenge #{version}"
       end
@@ -44,6 +63,12 @@ module Challenge
 
       def format_client(client)
         "#{client['full_name']} <#{client['email']}> \e[90m##{client['id']}\e[0m"
+      end
+
+      def extract_feedback_comments(client)
+        Array(client.dig('result', 'feedback')).filter_map do |entry|
+          entry.is_a?(Hash) ? entry['comment'] : entry
+        end
       end
     end
   end

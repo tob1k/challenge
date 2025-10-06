@@ -24,6 +24,12 @@ module Challenge
              .values.flatten
     end
 
+    def filter_by_rating(rating)
+      clients.select do |client|
+        client['result']['rating'].to_f >= rating.to_f
+      end
+    end
+
     private
 
     def load_dataset(path)

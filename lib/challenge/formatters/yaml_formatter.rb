@@ -37,11 +37,34 @@ module Challenge
         }.to_yaml
       end
 
+      def format_filtered_results(results)
+        {
+          'count' => results.size,
+          'clients' => results.map { |client| serialize_filtered_client(client) }
+        }.to_yaml
+      end
+
       def format_version(version)
         {
           'application' => 'challenge',
           'version' => version
         }.to_yaml
+      end
+
+      private
+
+      def serialize_filtered_client(client)
+        {
+          'id' => client['id'],
+          'full_name' => client['full_name'],
+          'email' => client['email'],
+          'result' => {
+            'rating' => client.dig('result', 'rating'),
+            'feedback' => Array(client.dig('result', 'feedback')).filter_map do |entry|
+              entry.is_a?(Hash) ? entry['comment'] : entry
+            end
+          }
+        }
       end
     end
   end
