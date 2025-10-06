@@ -10,7 +10,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
   - TTY output includes **syntax highlighting** to visually highlight matched text
 - **Duplicate Email Detection**: Find clients with duplicate email addresses in the dataset
 - **Rating Filter**: Filter clients by minimum rating threshold
-- **Dataset Generation**: Generate realistic test datasets with customizable size and guaranteed duplicates
+- **Dataset Generation**: Generate realistic test datasets with customizable size, guaranteed duplicates, and optional rating/feedback data
 - **Multiple Output Formats**: Support for TTY, CSV, JSON, XML, and YAML output formats
   - All formats support optional `result` fields (rating and feedback comments)
 - **Flexible Dataset Support**: Specify custom dataset files via command-line options
