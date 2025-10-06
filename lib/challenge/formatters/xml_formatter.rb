@@ -84,17 +84,21 @@ module Challenge
         rating = client.dig('result', 'rating')
         lines << "#{indent}  <rating>#{escape_xml(rating)}</rating>" if rating
 
-        feedback_comments = extract_feedback_comments(client)
-        if feedback_comments.any?
-          lines << "#{indent}  <feedback>"
-          feedback_comments.each do |comment|
-            lines << "#{indent}    <comment>#{escape_xml(comment)}</comment>"
-          end
-          lines << "#{indent}  </feedback>"
-        end
+        append_feedback_xml(lines, client, indent)
 
         lines << "#{indent}</client>"
         lines.join("\n")
+      end
+
+      def append_feedback_xml(lines, client, indent)
+        feedback_comments = extract_feedback_comments(client)
+        return unless feedback_comments.any?
+
+        lines << "#{indent}  <feedback>"
+        feedback_comments.each do |comment|
+          lines << "#{indent}    <comment>#{escape_xml(comment)}</comment>"
+        end
+        lines << "#{indent}  </feedback>"
       end
 
       def escape_xml(text)
