@@ -25,7 +25,7 @@ A Ruby command-line application for searching and analyzing client data from JSO
 Download the latest `.gem` file from [Releases](https://github.com/tob1k/challenge/releases) and install locally:
 
 ```bash
-gem install challenge-1.3.gem
+gem install challenge-1.5.gem
 ```
 
 ### For Development
@@ -224,6 +224,7 @@ The test suite includes:
 - **Multiple Formats**: Support for TTY, CSV, JSON, XML, and YAML outputs
 - **DRY Configuration**: Format options driven by a single FORMATTERS constant
 - **Extensible Design**: Easy to add new output formats without modifying core logic
+- **Colored Output**: Syntax highlighting for search results in TTY format
 
 ### CI/CD Pipeline
 
@@ -280,7 +281,6 @@ Given more time, the following enhancements would be prioritized:
 - **Interactive Mode**: REPL-style interface for multiple queries
 - **Search Suggestions**: Auto-complete and suggestion features
 - **Progress Indicators**: Progress bars for long-running operations
-- ✅ **Colored Output**: Syntax highlighting for search results in TTY format (implemented)
 
 ## Development
 
@@ -312,10 +312,10 @@ The project includes automated release workflows with full CI/CD pipeline:
    ```bash
    # Update version in lib/challenge/version.rb first
    git add lib/challenge/version.rb
-   git commit -m "Bump version to 1.2.5"
-   git tag v1.2.5
+   git commit -m "Bump version to 1.5"
+   git tag v1.5
    git push origin main
-   git push origin v1.2.5
+   git push origin v1.5
    ```
 
 2. **Automated CI/CD process**:

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-10-06
+
+### Added
+- `filter_by_rating` command to filter clients by minimum rating threshold
+- Support for optional `result` field in client data (rating and feedback)
+- Syntax highlighting for search query matches in TTY output format
+- Generated datasets now include realistic rating and feedback data
+- All output formatters (TTY, CSV, JSON, XML, YAML) now support rating and feedback fields
+
+### Changed
+- Updated all formatters to display rating and feedback information for search and duplicates commands
+- Enhanced TTY formatter with bold yellow highlighting for search matches
+- Dataset generator now creates clients with random ratings (2.0-5.0) and 0-3 feedback comments
+
 ## [1.2.6] - 2024-09-28
 
 ### Added
