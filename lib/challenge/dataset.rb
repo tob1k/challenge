@@ -26,7 +26,8 @@ module Challenge
 
     def filter_by_rating(rating)
       clients.select do |client|
-        client['result']['rating'].to_f >= rating.to_f
+        client_rating = client.dig('result', 'rating')
+        client_rating && client_rating.to_f >= rating.to_f
       end
     end
 

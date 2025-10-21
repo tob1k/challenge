@@ -231,6 +231,125 @@ RSpec.describe Challenge::Dataset do
     end
   end
 
+  describe '#filter_by_rating' do
+    let(:rated_clients) do
+      [
+        { 'id' => 1, 'full_name' => 'High Rated', 'email' => 'high@example.com',
+          'result' => { 'rating' => 4.5, 'feedback' => [] } },
+        { 'id' => 2, 'full_name' => 'Medium Rated', 'email' => 'medium@example.com',
+          'result' => { 'rating' => 3.2, 'feedback' => [] } },
+        { 'id' => 3, 'full_name' => 'Low Rated', 'email' => 'low@example.com',
+          'result' => { 'rating' => 2.0, 'feedback' => [] } },
+        { 'id' => 4, 'full_name' => 'No Result', 'email' => 'noresult@example.com' },
+        { 'id' => 5, 'full_name' => 'Result No Rating', 'email' => 'norating@example.com',
+          'result' => { 'feedback' => [] } },
+        { 'id' => 6, 'full_name' => 'Nil Rating', 'email' => 'nilrating@example.com',
+          'result' => { 'rating' => nil, 'feedback' => [] } },
+        { 'id' => 7, 'full_name' => 'Perfect Score', 'email' => 'perfect@example.com',
+          'result' => { 'rating' => 5.0, 'feedback' => [] } }
+      ]
+    end
+
+    let(:rated_temp_file) do
+      file = Tempfile.new(['rated_clients', '.json'])
+      file.write(JSON.pretty_generate(rated_clients))
+      file.close
+      file
+    end
+
+    let(:rated_dataset) { described_class.new(rated_temp_file.path) }
+
+    after do
+      rated_temp_file.unlink
+    end
+
+    context 'with valid ratings' do
+      it 'returns clients with rating >= threshold' do
+        results = rated_dataset.filter_by_rating(3.0)
+        expect(results).to contain_exactly(
+          { 'id' => 1, 'full_name' => 'High Rated', 'email' => 'high@example.com',
+            'result' => { 'rating' => 4.5, 'feedback' => [] } },
+          { 'id' => 2, 'full_name' => 'Medium Rated', 'email' => 'medium@example.com',
+            'result' => { 'rating' => 3.2, 'feedback' => [] } },
+          { 'id' => 7, 'full_name' => 'Perfect Score', 'email' => 'perfect@example.com',
+            'result' => { 'rating' => 5.0, 'feedback' => [] } }
+        )
+      end
+
+      it 'returns clients with exact rating match' do
+        results = rated_dataset.filter_by_rating(4.5)
+        expect(results).to contain_exactly(
+          { 'id' => 1, 'full_name' => 'High Rated', 'email' => 'high@example.com',
+            'result' => { 'rating' => 4.5, 'feedback' => [] } },
+          { 'id' => 7, 'full_name' => 'Perfect Score', 'email' => 'perfect@example.com',
+            'result' => { 'rating' => 5.0, 'feedback' => [] } }
+        )
+      end
+
+      it 'returns all clients when threshold is very low' do
+        results = rated_dataset.filter_by_rating(0.0)
+        expect(results.size).to eq(4) # Only clients with actual ratings
+      end
+
+      it 'returns empty array when threshold is very high' do
+        results = rated_dataset.filter_by_rating(10.0)
+        expect(results).to eq([])
+      end
+    end
+
+    context 'with missing or invalid rating data' do
+      it 'excludes clients with no result field' do
+        results = rated_dataset.filter_by_rating(0.0)
+        emails = results.map { |c| c['email'] }
+        expect(emails).not_to include('noresult@example.com')
+      end
+
+      it 'excludes clients with result but no rating field' do
+        results = rated_dataset.filter_by_rating(0.0)
+        emails = results.map { |c| c['email'] }
+        expect(emails).not_to include('norating@example.com')
+      end
+
+      it 'excludes clients with nil rating' do
+        results = rated_dataset.filter_by_rating(0.0)
+        emails = results.map { |c| c['email'] }
+        expect(emails).not_to include('nilrating@example.com')
+      end
+    end
+
+    context 'with string rating input' do
+      it 'handles string input for threshold' do
+        results = rated_dataset.filter_by_rating('3.5')
+        expect(results).to contain_exactly(
+          { 'id' => 1, 'full_name' => 'High Rated', 'email' => 'high@example.com',
+            'result' => { 'rating' => 4.5, 'feedback' => [] } },
+          { 'id' => 7, 'full_name' => 'Perfect Score', 'email' => 'perfect@example.com',
+            'result' => { 'rating' => 5.0, 'feedback' => [] } }
+        )
+      end
+    end
+
+    context 'with empty dataset' do
+      let(:empty_dataset_file) do
+        file = Tempfile.new(['empty_dataset', '.json'])
+        file.write('[]')
+        file.close
+        file
+      end
+
+      let(:empty_dataset) { described_class.new(empty_dataset_file.path) }
+
+      after do
+        empty_dataset_file.unlink
+      end
+
+      it 'returns empty array' do
+        results = empty_dataset.filter_by_rating(3.0)
+        expect(results).to eq([])
+      end
+    end
+  end
+
   describe 'handling malformed data' do
     let(:malformed_clients) do
       [
