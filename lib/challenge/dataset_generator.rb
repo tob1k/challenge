@@ -52,10 +52,8 @@ module Challenge
       # Set seed for reproducible data if provided
       srand(seed) if seed
 
-      puts "Generating #{size} clients..."
       clients = (1..size).map { |id| generate_single_client(id) }
 
-      puts 'Adding duplicates...'
       add_duplicates(clients, size)
 
       File.write(filename, JSON.pretty_generate(clients))
